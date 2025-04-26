@@ -1,0 +1,26 @@
+{
+    "login": "Masuk",
+    "email": "Surel",
+    "password": "Kata Sandi",
+    "selectLanguage": "Pilih Bahasa",
+    "welcome_back":"Selamat Datang",
+        "sign_in": "Masuk",
+        "loading": "Memuat...",
+        "no_account": "Belum memiliki akun?",
+        "create_account": "Buat Akun",
+        
+        "fullname_required": "Nama lengkap diperlukan",
+        "email_required": "Email diperlukan",
+        "invalid_email": "Format email tidak valid",
+        "password_required": "Kata sandi diperlukan",
+        "password_min_length": "Kata sandi harus minimal 6 karakter",
+        
+        "full_name": "Nama Lengkap",
+        "name_placeholder": "John Doe",
+        "get_started_message": "Mulai dengan akun gratis Anda",
+        "already_have_account": "Sudah memiliki akun?",
+        
+        "join_community": "Bergabunglah dengan komunitas kami",
+        "connect_friends": "Terhubung dengan teman, berbagi momen, dan tetap berhubungan dengan orang yang Anda sayangi."
+      
+}
