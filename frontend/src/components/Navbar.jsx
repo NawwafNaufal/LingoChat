@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { useContext, createContext, useState, useEffect } from "react";
 import ProfilePopup from "../pages/ProfilePage"; // Import ProfilePopup
+import SettingsPopup from "./Settings" // Import SettingsPopup
 
 const SidebarContext = createContext();
 
@@ -20,7 +21,8 @@ export default function Layout({ children }) {
   const [expanded, setExpanded] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [isProfileOpen, setIsProfileOpen] = useState(false); // State untuk ProfilePopup
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false); // New state for settings popup
   const { logout, authUser } = useAuthStore();
   const location = useLocation();
 
@@ -53,12 +55,20 @@ export default function Layout({ children }) {
     }
   };
 
-  // Handler untuk membuka ProfilePopup
   const openProfilePopup = (e) => {
-    e.preventDefault(); // Mencegah navigasi ke halaman profile
+    e.preventDefault();
     setIsProfileOpen(true);
     if (isMobile && mobileMenuOpen) {
-      setMobileMenuOpen(false); // Tutup sidebar mobile saat popup profile dibuka
+      setMobileMenuOpen(false);
+    }
+  };
+
+  // Handler for opening settings popup
+  const openSettingsPopup = (e) => {
+    e.preventDefault(); // Prevent navigation
+    setIsSettingsOpen(true);
+    if (isMobile && mobileMenuOpen) {
+      setMobileMenuOpen(false); // Close mobile sidebar when popup opens
     }
   };
 
@@ -114,15 +124,16 @@ export default function Layout({ children }) {
                 />
               </Link>
               
-              <Link to="/settings">
+              {/* Settings - modified to open popup instead of navigation */}
+              <div onClick={openSettingsPopup}>
                 <SidebarItem 
                   icon={<Settings className="w-5 h-5" />} 
                   text="Settings" 
                   active={location.pathname === "/settings"}
                 />
-              </Link>
+              </div>
               
-              {/* Profile - modifikasi untuk membuka popup alih-alih navigasi */}
+              {/* Profile */}
               {authUser && (
                 <div onClick={openProfilePopup}>
                   <SidebarItem 
@@ -145,7 +156,7 @@ export default function Layout({ children }) {
             </ul>
           </SidebarContext.Provider>
           
-          {/* User profile section at bottom - make it clickable to open profile popup */}
+          {/* User profile section at bottom */}
           <div 
             className="border-t border-gray-800 p-3 cursor-pointer hover:bg-gray-800 transition-colors"
             onClick={openProfilePopup}
@@ -203,11 +214,17 @@ export default function Layout({ children }) {
         isOpen={isProfileOpen} 
         onClose={() => setIsProfileOpen(false)} 
       />
+      
+      {/* Settings Popup */}
+      <SettingsPopup 
+        isOpen={isSettingsOpen} 
+        onClose={() => setIsSettingsOpen(false)} 
+      />
     </div>
   );
 }
 
-// Sidebar item component
+// SidebarItem remains the same
 export function SidebarItem({ icon, text, active, alert }) {
   const { expanded } = useContext(SidebarContext);
   

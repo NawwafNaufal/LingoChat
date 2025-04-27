@@ -1,14 +1,13 @@
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
-// import { useAuthStore } from "../store/useAuthStore";
 import { Link, useNavigate } from "react-router-dom";
 import { Loader2, Mail, CheckCircle } from "lucide-react";
+import axios from "axios";
 
 const LoginPage = () => {
   const [formData, setFormData] = useState({ email: "" });
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [showNotification, setShowNotification] = useState(false);
-//   const { login } = useAuthStore();
   const navigate = useNavigate();
 
   const { t, i18n } = useTranslation();
@@ -16,23 +15,45 @@ const LoginPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoggingIn(true);
-    
-    // Simulate login process
-    setTimeout(() => {
-      setIsLoggingIn(false);
+    setShowNotification(false);
+
+    try {
+      // Kirim email ke server untuk request OTP (perbaikan: hapus state yang tidak perlu)
+      const res = await axios.post("http://localhost:4000/passwordAuth/emailVerif", {
+        email: formData.email
+      });
       
-      // Show notification
-      setShowNotification(true);
-      
-      // Store email in localStorage or context for the verification page
-      localStorage.setItem("verificationEmail", formData.email);
-      
-      // Navigate to the OTP verification page after showing notification
+      if (res.data.status === "error") {
+        setShowNotification(true);
+        // Menampilkan notifikasi kesalahan
+        alert(t("Email not found, please try again.")); // Atau bisa menggunakan notifikasi lain
+      } else {
+        console.log(res.data); // opsional: cek respons
+  
+        // Berhasil kirim, tampilkan notifikasi
+        setShowNotification(true);
+  
+        // Simpan email di localStorage untuk dipakai di halaman OTP
+        localStorage.setItem("verificationEmail", formData.email);
+  
+        setTimeout(() => {
+          navigate("/otp");
+        }, 2000);
+      }
+
       setTimeout(() => {
-        // Using the correct route path from your App.js
+        // Opsi 1: Menggunakan localStorage (email sudah disimpan di atas)
         navigate("/otp");
-      }, 2000); // Wait 2 seconds before navigating
-    }, 1000);
+        
+        // Atau bisa juga dengan Opsi 2: Menggunakan navigate dengan state
+        // navigate("/otp", { state: { email: formData.email } });
+      }, 2000);
+    } catch (error) {
+      console.error("Gagal mengirim email:", error);
+      alert("Gagal mengirim email, coba lagi.");
+    } finally {
+      setIsLoggingIn(false);
+    }
   };
 
   const handleLangChange = (e) => {
@@ -43,12 +64,9 @@ const LoginPage = () => {
 
   return (
     <div className="h-screen flex justify-center items-center bg-black text-white">
-      {/* Header with logo and language selector */}
+      {/* Header */}
       <div className="absolute top-0 left-0 w-full p-4 flex justify-between items-center">
-        {/* N-G Logo at left corner */}
         <div className="font-bold text-xl">N-G</div>
-        
-        {/* Dropdown Bahasa at right corner */}
         <select
           value={i18n.language}
           onChange={handleLangChange}
@@ -59,16 +77,16 @@ const LoginPage = () => {
           <option value="es">Spanish</option>
         </select>
       </div>
-      
-      {/* Success Notification */}
+
+      {/* Notifikasi Sukses */}
       {showNotification && (
         <div className="fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded-md flex items-center gap-2 shadow-lg animate-fadeIn">
           <CheckCircle className="h-5 w-5" />
           <span>{t("OTP code has been sent to your email")}</span>
         </div>
       )}
-      
-      {/* Centered Form Container */}
+
+      {/* Form */}
       <div className="w-full max-w-md p-6 sm:p-8">
         <div className="mb-8">
           <div className="flex flex-col items-center justify-center text-center gap-3">
@@ -79,9 +97,7 @@ const LoginPage = () => {
           </div>
         </div>
 
-        {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-3">
-          {/* Email */}
           <div className="form-control mb-2">
             <label className="label">
               <span className="label-text text-gray-300 font-medium">{t("email")}</span>
@@ -101,7 +117,6 @@ const LoginPage = () => {
             </div>
           </div>
 
-          {/* Submit */}
           <button 
             type="submit" 
             className="btn w-full bg-gray-700 hover:bg-gray-600 border-none text-white" 
@@ -118,7 +133,6 @@ const LoginPage = () => {
           </button>
         </form>
 
-        {/* Bottom Link */}
         <div className="text-center mt-6">
           <p className="text-gray-400">
             {t("Remember password?")}{" "}

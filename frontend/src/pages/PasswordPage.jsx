@@ -1,32 +1,102 @@
 import { useTranslation } from "react-i18next";
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Loader2, Lock, CheckCircle } from "lucide-react";
+import axios from "axios";
 
 const ResetPasswordPage = () => {
   const [formData, setFormData] = useState({ password: "", confirmPassword: "" });
   const [isResetting, setIsResetting] = useState(false);
   const [showNotification, setShowNotification] = useState(false);
+  const [email, setEmail] = useState("");
+  const [isVerified, setIsVerified] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
 
   const { t, i18n } = useTranslation();
+  
+  // Cek status verifikasi dan email saat komponen dipasang
+  useEffect(() => {
+    // Cek apakah ada email yang diteruskan dari halaman OTP
+    const stateEmail = location.state?.email;
+    const stateVerified = location.state?.verified;
+    
+    if (stateEmail) {
+      setEmail(stateEmail);
+      console.log("Email diterima dari state:", stateEmail);
+      
+      // Jika verified=true dalam state, user telah memverifikasi OTP
+      if (stateVerified) {
+        setIsVerified(true);
+        console.log("Status verifikasi: Terverifikasi");
+      } else {
+        console.log("Status verifikasi: Belum terverifikasi");
+      }
+    } else {
+      // Jika tidak ada email, cek dari localStorage
+      const storedEmail = localStorage.getItem("verificationEmail");
+      if (storedEmail) {
+        setEmail(storedEmail);
+        console.log("Email diambil dari localStorage:", storedEmail);
+      } else {
+        // Jika tidak ada email sama sekali, arahkan kembali ke forgot password
+        console.log("Email tidak ditemukan, mengalihkan ke halaman forgot password");
+        alert("Silakan masukkan email Anda terlebih dahulu.");
+        navigate("/forgot-password");
+      }
+    }
+  }, [location.state, navigate]);
+  
+  // Cek verifikasi (jika belum terverifikasi dan punya email)
+  useEffect(() => {
+    if (!isVerified && email) {
+      console.log("Status belum terverifikasi, mengalihkan ke halaman OTP");
+      navigate("/verify-email", { state: { email } });
+    }
+  }, [isVerified, email, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsResetting(true);
     
-    // Simulate password reset process
-    setTimeout(() => {
-      setIsResetting(false);
-      
-      // Show notification
+    if (formData.password !== formData.confirmPassword) {
+      alert("Password dan Confirm Password tidak sama");
+      return;
+    }
+
+    if (!email) {
+      alert("Email tidak ditemukan. Silakan ulangi proses reset password.");
+      navigate("/forgot-password");
+      return;
+    }
+
+    setIsResetting(true);
+
+    try {
+      // Sesuaikan endpoint sesuai dengan controller yang diberikan
+      const response = await axios.patch(`http://localhost:4000/passwordAuth/changePassword/${email}`, {
+        password: formData.password
+      }, {
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
+
+      console.log("Reset password berhasil:", response.data);
       setShowNotification(true);
+
+      // Hapus data verifikasi dari localStorage
+      localStorage.removeItem("verificationEmail");
       
-      // Navigate to login page after showing notification
       setTimeout(() => {
         navigate("/login");
-      }, 2000); // Wait 2 seconds before navigating
-    }, 1000);
+      }, 2000);
+
+    } catch (error) {
+      console.error("Reset password gagal:", error);
+      alert(error.response?.data?.message || "Gagal reset password. Coba lagi nanti.");
+    } finally {
+      setIsResetting(false);
+    }
   };
 
   const handleLangChange = (e) => {
@@ -39,10 +109,8 @@ const ResetPasswordPage = () => {
     <div className="h-screen flex justify-center items-center bg-black text-white">
       {/* Header with logo and language selector */}
       <div className="absolute top-0 left-0 w-full p-4 flex justify-between items-center">
-        {/* N-3 Logo at left corner */}
         <div className="font-bold text-xl">N-3</div>
-        
-        {/* Dropdown Bahasa at right corner */}
+
         <select
           value={i18n.language}
           onChange={handleLangChange}
@@ -53,7 +121,7 @@ const ResetPasswordPage = () => {
           <option value="es">Spanish</option>
         </select>
       </div>
-      
+
       {/* Success Notification */}
       {showNotification && (
         <div className="fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded-md flex items-center gap-2 shadow-lg animate-fadeIn">
@@ -61,13 +129,14 @@ const ResetPasswordPage = () => {
           <span>{t("Password has been reset successfully")}</span>
         </div>
       )}
-      
+
       {/* Centered Form Container */}
       <div className="w-full max-w-md p-6 sm:p-8">
         <div className="mb-8">
           <div className="flex flex-col items-center justify-center text-center gap-3">
             <div>
               <h1 className="text-4xl font-bold text-white">{t("Set New Password")}</h1>
+              <p className="text-gray-400 text-sm mt-2">{t("For")} {email}</p>
               <p className="text-gray-400 text-sm">{t("Password must be at least 8 characters")}</p>
             </div>
           </div>
@@ -87,7 +156,7 @@ const ResetPasswordPage = () => {
               <input
                 type="password"
                 className="input input-bordered w-full pl-10 bg-transparent border-gray-700"
-                placeholder="Password"
+                placeholder={t("Enter new password")}
                 value={formData.password}
                 onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                 required
@@ -108,7 +177,7 @@ const ResetPasswordPage = () => {
               <input
                 type="password"
                 className="input input-bordered w-full pl-10 bg-transparent border-gray-700"
-                placeholder="Confirm Password"
+                placeholder={t("Confirm your password")}
                 value={formData.confirmPassword}
                 onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
                 required
@@ -129,7 +198,7 @@ const ResetPasswordPage = () => {
                 {t("Processing...")}
               </>
             ) : (
-              t("Continue")
+              t("Reset Password")
             )}
           </button>
         </form>

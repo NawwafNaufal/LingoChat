@@ -1,15 +1,65 @@
 import { useTranslation } from "react-i18next";
-import { useState, useRef } from "react";
-import { Loader2 } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { useState, useRef, useEffect } from "react";
+import { Loader2, CheckCircle, XCircle, AlertCircle } from "lucide-react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import axios from "axios";
+
+// Konfigurasi axios global untuk CORS
+axios.defaults.headers.common['Content-Type'] = 'application/json';
 
 const EmailVerificationPage = () => {
   const { t, i18n } = useTranslation();
   const [isVerifying, setIsVerifying] = useState(false);
   const [otp, setOtp] = useState(['', '', '', '', '']);
+  const [email, setEmail] = useState("");
   const inputRefs = [useRef(), useRef(), useRef(), useRef(), useRef()];
-  const email = "Someone@gmail.com"; // This would come from your app state or route params
   const navigate = useNavigate();
+  const location = useLocation();
+  
+  const [notification, setNotification] = useState({
+    show: false,
+    type: "success", // success, error, warning
+    message: ""
+  });
+  
+  // Ambil email saat komponen dipasang
+  useEffect(() => {
+    // Coba ambil dari localStorage terlebih dahulu
+    const storedEmail = localStorage.getItem("verificationEmail");
+    
+    // Coba ambil dari state
+    const stateEmail = location.state?.email;
+    
+    // Prioritaskan yang tersedia
+    if (storedEmail) {
+      setEmail(storedEmail);
+      console.log("Email diambil dari localStorage:", storedEmail);
+    } else if (stateEmail) {
+      setEmail(stateEmail);
+      console.log("Email diambil dari state:", stateEmail);
+    } else {
+      // Jika tidak ada, arahkan kembali ke halaman forgot password
+      showNotification("error", t("Email not found. Please try again from the beginning."));
+      setTimeout(() => {
+        navigate("/forgot-password");
+      }, 2000);
+    }
+  }, [location.state, navigate, t]);
+  
+  const showNotification = (type, message, duration = 3000) => {
+    setNotification({
+      show: true,
+      type,
+      message
+    });
+
+    // Sembunyikan notifikasi setelah durasi tertentu
+    if (duration) {
+      setTimeout(() => {
+        setNotification(prev => ({ ...prev, show: false }));
+      }, duration);
+    }
+  };
   
   const handleLangChange = (e) => {
     const lang = e.target.value;
@@ -18,13 +68,10 @@ const EmailVerificationPage = () => {
   };
   
   const handleOtpChange = (index, value) => {
-    // Only allow numeric values
     if (value === '' || /^[0-9]$/.test(value)) {
       const newOtp = [...otp];
       newOtp[index] = value;
       setOtp(newOtp);
-      
-      // Auto-focus next input when a digit is entered
       if (value !== '' && index < 4) {
         inputRefs[index + 1].current.focus();
       }
@@ -32,37 +79,117 @@ const EmailVerificationPage = () => {
   };
   
   const handleKeyDown = (index, e) => {
-    // Handle backspace to move to previous input
     if (e.key === 'Backspace' && index > 0 && otp[index] === '') {
       inputRefs[index - 1].current.focus();
     }
   };
   
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setIsVerifying(true);
-    
-    // Simulate verification process
-    setTimeout(() => {
+
+    // Gabung array otp jadi string
+    const otpString = otp.join('');
+    console.log("Mengirim verifikasi OTP:", { email, otp: otpString });
+
+    try {
+      // Pastikan format request body sesuai dengan backend
+      const response = await axios.post('http://localhost:4000/passwordAuth/validateOtp', {
+        email: email,
+        otp: otpString
+      }, {
+        // Tambahkan konfigurasi tambahan untuk CORS jika perlu
+        withCredentials: false, // Set true jika perlu kirim cookie
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
+
+      console.log("Verifikasi berhasil:", response.data);
+      
+      // Tampilkan notifikasi sukses
+      showNotification("success", t("OTP verification successful!"));
+      
+      // Kalau verifikasi sukses, redirect ke halaman reset password setelah delay
+      setTimeout(() => {
+        navigate("/password", { 
+          state: { 
+            email: email,
+            verified: true 
+          } 
+        });
+      }, 1500);
+    } catch (error) {
+      console.error("Gagal verifikasi OTP:", error);
+      
+      // Dapatkan pesan error dari response
+      const errorMessage = error.response?.data?.message || 
+                         t("Invalid OTP code. Please check and try again.");
+      
+      // Tampilkan notifikasi error
+      showNotification("error", errorMessage);
+      
+      // Reset input OTP jika kode salah
+      if (error.response?.status === 400 || error.response?.status === 401) {
+        setOtp(['', '', '', '', '']);
+        inputRefs[0].current.focus();
+      }
+    } finally {
       setIsVerifying(false);
-      // Navigate to password reset page after verification
-      navigate("/password");
-    }, 1500);
+    }
   };
   
-  const handleResendCode = () => {
-    // Logic to resend verification code
-    alert("Resending verification code to " + email);
+  const handleResendCode = async () => {
+    try {
+      const response = await axios.post('http://localhost:4000/passwordAuth/newOtp', {
+        email
+      }, {
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
+
+      console.log("Kode OTP baru dikirim:", response.data);
+      showNotification("success", t("New OTP code has been sent to your email."));
+    } catch (error) {
+      console.error("Gagal kirim ulang OTP:", error);
+      showNotification("error", error.response?.data?.message || t("Failed to resend OTP code."));
+    }
+  };
+  
+  // Mendapatkan komponen ikon yang sesuai dengan tipe notifikasi
+  const getNotificationIcon = () => {
+    switch (notification.type) {
+      case "success":
+        return <CheckCircle className="h-5 w-5" />;
+      case "error":
+        return <XCircle className="h-5 w-5" />;
+      case "warning":
+        return <AlertCircle className="h-5 w-5" />;
+      default:
+        return <CheckCircle className="h-5 w-5" />;
+    }
+  };
+
+  // Mendapatkan warna background yang sesuai dengan tipe notifikasi
+  const getNotificationColor = () => {
+    switch (notification.type) {
+      case "success":
+        return "bg-green-500";
+      case "error":
+        return "bg-red-500";
+      case "warning":
+        return "bg-yellow-500";
+      default:
+        return "bg-green-500";
+    }
   };
   
   return (
     <div className="h-screen flex justify-center items-center bg-black text-white">
-      {/* Header with logo and language selector */}
+      {/* Header */}
       <div className="absolute top-0 left-0 w-full p-4 flex justify-between items-center">
-        {/* N-3 Logo at left corner */}
-        <div className="font-bold text-xl">N-3</div>
-        
-        {/* Dropdown Bahasa at right corner */}
+        <div className="font-bold text-xl">N-G</div>
         <select
           value={i18n.language}
           onChange={handleLangChange}
@@ -73,25 +200,26 @@ const EmailVerificationPage = () => {
           <option value="es">Spanish</option>
         </select>
       </div>
-      
-      {/* Centered Form Container */}
+
+      {/* Notifikasi (Success, Error, atau Warning) */}
+      {notification.show && (
+        <div className={`fixed top-4 right-4 ${getNotificationColor()} text-white px-4 py-2 rounded-md flex items-center gap-2 shadow-lg animate-fadeIn`}>
+          {getNotificationIcon()}
+          <span>{notification.message}</span>
+        </div>
+      )}
+
+      {/* Form */}
       <div className="w-full max-w-lg p-6 sm:p-8">
-        <div className="mb-8">
-          <div className="flex flex-col items-center justify-center text-center gap-3">
-            <div>
-              <h1 className="text-4xl font-bold text-white">{t("Verify your email address")}</h1>
-              <p className="text-gray-400 text-sm mt-2">
-                {t("Please enter the 5-digit code we sent to")}
-                <br />
-                <span className="text-white">{email}</span>
-              </p>
-            </div>
-          </div>
+        <div className="mb-8 text-center">
+          <h1 className="text-4xl font-bold">{t("Verify your email address")}</h1>
+          <p className="text-gray-400 text-sm mt-2">
+            {t("Please enter the 5-digit code we sent to")}<br />
+            <span className="text-white">{email}</span>
+          </p>
         </div>
         
-        {/* OTP Input Form */}
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* OTP Input Fields */}
           <div className="flex justify-center space-x-6">
             {otp.map((digit, index) => (
               <input
@@ -103,11 +231,11 @@ const EmailVerificationPage = () => {
                 onChange={(e) => handleOtpChange(index, e.target.value)}
                 onKeyDown={(e) => handleKeyDown(index, e)}
                 className="input input-bordered w-12 h-12 text-center text-xl bg-transparent border-gray-700"
+                autoComplete="one-time-code"
               />
             ))}
           </div>
-          
-          {/* Resend Code Text */}
+
           <div className="text-center">
             <p className="text-gray-400 text-sm">
               {t("Didn't get OTP code?")}{" "}
@@ -120,8 +248,7 @@ const EmailVerificationPage = () => {
               </button>
             </p>
           </div>
-          
-          {/* Continue Button */}
+
           <div className="flex justify-center">
             <button 
               type="submit" 
@@ -138,8 +265,7 @@ const EmailVerificationPage = () => {
               )}
             </button>
           </div>
-          
-          {/* Back Link */}
+
           <div className="text-center">
             <Link to="/forgot-password" className="text-gray-400 hover:underline">
               {t("Back to Forgot Password")}

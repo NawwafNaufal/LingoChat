@@ -71,24 +71,44 @@ export const forgetPassword = async (req, res) => {
 };
 
 
-export const validateCodeOtp =async (req,res) => {
-    const {otp_code} = req.body
-    console.log(data)
+export const validateCodeOtp = async (req, res) => {
+    // Ambil email dan otp dari request body (sesuai dengan frontend)
+    const { email, otp } = req.body;
+    
+    console.log("Menerima request validasi OTP:", { email, otp });
+    
     try {
-        const result = await getOtp(otp_code)
+        // Panggil fungsi untuk memeriksa OTP di database
+        // Asumsikan getOtp menerima otp sebagai parameter (sesuaikan jika perlu)
+        const result = await getOtp(otp);
+        
         if(!result) {
-            return res.send("Kode Otp tidak valid atau sudah kadaluwarsa")
+            return res.status(400).json({
+                message: "Kode OTP tidak valid atau sudah kadaluwarsa"
+            });
         }
+        
+        // Periksa apakah email cocok dengan OTP
+        if(result.email !== email) {
+            return res.status(400).json({
+                message: "Email tidak cocok dengan kode OTP"
+            });
+        }
+        
+        // Jika berhasil
         res.status(200).json({
-            data:result.email,
-            message:"Kode Otp Valid"
-        })
+            data: result.email,
+            message: "Kode OTP valid"
+        });
         
     } catch (error) {
-        res.send(error)
+        console.error("Error validasi OTP:", error);
+        res.status(500).json({
+            message: "Terjadi kesalahan saat validasi OTP",
+            error: error.message
+        });
     }
-    
-}
+};
 
 export const changePassword = async (req, res) => {
     const { password } = req.body;
