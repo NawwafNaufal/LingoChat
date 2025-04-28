@@ -1,29 +1,31 @@
-import { useState } from 'react';
-import { X, User, Lock, Languages, ChevronDown, ChevronUp } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { X, User, Lock, Languages } from 'lucide-react';
 import PasswordChangePopup from './ChangePassword';
 
 export default function SettingsPopup({ isOpen, onClose, user }) {
-  const [languageOpen, setLanguageOpen] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState("English");
   const [isPasswordChangeOpen, setIsPasswordChangeOpen] = useState(false);
 
+  useEffect(() => {
+    // Saat pertama kali komponen dimount, ambil bahasa dari localStorage
+    const savedLanguage = localStorage.getItem('selectedLanguage');
+    if (savedLanguage) {
+      setSelectedLanguage(savedLanguage);
+    }
+  }, []);
+
+  const handleLanguageSelect = (language) => {
+    setSelectedLanguage(language);
+    localStorage.setItem('selectedLanguage', language); // Simpan ke localStorage
+  };
+
   if (!isOpen) return null;
 
-  // Default user data if not provided
   const userData = user || {
     name: "Naufal",
     email: "Naufal23@gmail.com",
     status: "This is Away",
     profilePic: null
-  };
-
-  const toggleLanguageDropdown = () => {
-    setLanguageOpen(!languageOpen);
-  };
-
-  const selectLanguage = (language) => {
-    setSelectedLanguage(language);
-    setLanguageOpen(false);
   };
 
   const openPasswordChange = () => {
@@ -32,9 +34,10 @@ export default function SettingsPopup({ isOpen, onClose, user }) {
 
   return (
     <>
-      <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 z-50">
-        <div className="bg-black w-80 max-w-md rounded-lg shadow-lg overflow-hidden border border-gray-800">
-          {/* Header with title and close button */}
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div className="bg-[#1c1c1c] w-80 max-w-md rounded-lg shadow-lg overflow-hidden border border-gray-800">
+
+          {/* Header */}
           <div className="flex justify-between items-center p-5 pb-6">
             <h2 className="text-xl font-medium text-white">Settings</h2>
             <button onClick={onClose} className="text-gray-400 hover:text-white">
@@ -60,7 +63,7 @@ export default function SettingsPopup({ isOpen, onClose, user }) {
             </div>
           </div>
 
-          {/* Full-width Divider */}
+          {/* Divider */}
           <div className="border-t border-gray-800 w-full mt-2"></div>
 
           {/* Menu Items */}
@@ -69,7 +72,7 @@ export default function SettingsPopup({ isOpen, onClose, user }) {
               <User className="w-5 h-5 mr-3 text-gray-400" />
               My Account
             </button>
-            
+
             <button 
               onClick={openPasswordChange}
               className="w-full text-left px-5 py-4 text-white hover:bg-gray-800 transition-colors flex items-center"
@@ -77,46 +80,34 @@ export default function SettingsPopup({ isOpen, onClose, user }) {
               <Lock className="w-5 h-5 mr-3 text-gray-400" />
               Change Password
             </button>
-            
-            {/* Language selector with dropdown */}
+
+            {/* Language Selector */}
             <div className="w-full">
-              <button 
-                onClick={toggleLanguageDropdown}
-                className="w-full text-left px-5 py-4 text-white hover:bg-gray-800 transition-colors flex items-center justify-between"
-              >
-                <div className="flex items-center">
-                  <Languages className="w-5 h-5 mr-3 text-gray-400" />
-                  Language
-                </div>
-                {languageOpen ? 
-                  <ChevronUp className="w-4 h-4 text-gray-400" /> : 
-                  <ChevronDown className="w-4 h-4 text-gray-400" />
-                }
-              </button>
-              
-              {/* Language dropdown */}
-              {languageOpen && (
-                <div className="bg-gray-900 w-full border-t border-b border-gray-800">
-                  <button 
-                    onClick={() => selectLanguage("English")}
-                    className={`w-full text-left pl-12 py-3 ${selectedLanguage === "English" ? "text-blue-400" : "text-gray-300"} hover:bg-gray-800 transition-colors`}
-                  >
-                    English
-                  </button>
-                  <button 
-                    onClick={() => selectLanguage("Indonesian")}
-                    className={`w-full text-left pl-12 py-3 ${selectedLanguage === "Indonesian" ? "text-blue-400" : "text-gray-300"} hover:bg-gray-800 transition-colors`}
-                  >
-                    Indonesian
-                  </button>
-                  <button 
-                    onClick={() => selectLanguage("Spanish")}
-                    className={`w-full text-left pl-12 py-3 ${selectedLanguage === "Spanish" ? "text-blue-400" : "text-gray-300"} hover:bg-gray-800 transition-colors`}
-                  >
-                    Spanish
-                  </button>
-                </div>
-              )}
+              <div className="px-5 py-4 text-white flex items-center">
+                <Languages className="w-5 h-5 mr-3 text-gray-400" />
+                Language
+              </div>
+
+              <div className="bg-[#1c1c1c] w-full border-t border-b border-gray-800">
+                <button 
+                  onClick={() => handleLanguageSelect("English")}
+                  className={`w-full text-left pl-12 py-3 ${selectedLanguage === "English" ? "text-blue-400" : "text-gray-300"} hover:bg-gray-800 transition-colors`}
+                >
+                  English
+                </button>
+                <button 
+                  onClick={() => handleLanguageSelect("Indonesian")}
+                  className={`w-full text-left pl-12 py-3 ${selectedLanguage === "Indonesian" ? "text-blue-400" : "text-gray-300"} hover:bg-gray-800 transition-colors`}
+                >
+                  Indonesian
+                </button>
+                <button 
+                  onClick={() => handleLanguageSelect("Spanish")}
+                  className={`w-full text-left pl-12 py-3 ${selectedLanguage === "Spanish" ? "text-blue-400" : "text-gray-300"} hover:bg-gray-800 transition-colors`}
+                >
+                  Spanish
+                </button>
+              </div>
             </div>
           </div>
 
@@ -126,7 +117,7 @@ export default function SettingsPopup({ isOpen, onClose, user }) {
           </div>
         </div>
       </div>
-      
+
       {/* Password Change Popup */}
       <PasswordChangePopup 
         isOpen={isPasswordChangeOpen} 

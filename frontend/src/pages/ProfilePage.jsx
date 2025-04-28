@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Pencil, Camera, Mail, User, X,Sailboat } from "lucide-react";
+import { Pencil, Camera, Mail, User, X, Sailboat } from "lucide-react";
 import { useAuthStore } from "../store/useAuthStore";
 
 const ProfilePopup = ({ isOpen, onClose }) => {
@@ -117,38 +117,42 @@ const ProfilePopup = ({ isOpen, onClose }) => {
         </div>
 
         <div className="mt-6 space-y-4">
-
           {/* Full Name */}
           <div>
-            <label className="flex items-center gap-2 mb-1 text-sm">
-              <User className="w-4 h-4" Username/>
-             Username
-            </label>
+            <div className="flex items-center ml-3 mb-1">
+              <label className="text-sm text-gray-400">Username</label>
+            </div>
             <div className="relative">
               {editNameMode ? (
                 <>
-                  <input
-                    type="text"
-                    className="w-full bg-[#1c1c1c] text-white rounded-lg py-2 px-4 pr-10 outline-none"
-                    value={fullNameInput}
-                    onChange={(e) => setFullNameInput(e.target.value)}
-                    onKeyPress={(e) => e.key === "Enter" && handleSubmitName()}
-                    autoFocus
-                  />
-                  <button
-                    className="absolute top-2.5 right-3 text-white hover:text-green-400"
-                    onClick={handleSubmitName}
-                  >
-                    ✓
-                  </button>
+                  <div className="flex items-center w-full">
+                    <User className="absolute left-3 w-5 h-5 text-gray-400" />
+                    <input
+                      type="text"
+                      className="w-full bg-[#1c1c1c] text-white rounded-lg py-3 pl-10 pr-10 outline-none"
+                      value={fullNameInput}
+                      onChange={(e) => setFullNameInput(e.target.value)}
+                      onKeyPress={(e) => e.key === "Enter" && handleSubmitName()}
+                      autoFocus
+                    />
+                    <button
+                      className="absolute right-3 text-white hover:text-green-400"
+                      onClick={handleSubmitName}
+                    >
+                      ✓
+                    </button>
+                  </div>
                 </>
               ) : (
                 <div
-                  className="bg-[#1c1c1c] py-2 px-4 rounded-lg flex justify-between items-center cursor-pointer"
+                  className="bg-[#1c1c1c] rounded-lg flex justify-between items-center cursor-pointer"
                   onClick={() => setEditNameMode(true)}
                 >
-                  <span>{authUser.fullName || "Not set"}</span>
-                  <Pencil className="w-4 h-4 text-white" />
+                  <div className="flex items-center flex-1 py-2">
+                    <User className="ml-3 w-5 h-5 text-gray-400" />
+                    <span className="ml-2">{authUser.fullName || "Not set"}</span>
+                  </div>
+                  <Pencil className="mr-3 w-5 h-5 text-white" />
                 </div>
               )}
             </div>
@@ -156,35 +160,40 @@ const ProfilePopup = ({ isOpen, onClose }) => {
 
           {/* Description */}
           <div>
-            <label className="flex items-center gap-2 mb-1 text-sm">
-            <Sailboat className="w-4 h-4" sailboat/>
-              About
-            </label>
+            <div className="flex items-center ml-3 mb-1">
+              <label className="text-sm text-gray-400">About</label>
+            </div>
             <div className="relative">
               {editDescriptionMode ? (
                 <>
-                  <input
-                    type="text"
-                    className="w-full bg-[#1c1c1c] text-white rounded-lg py-2 px-4 pr-10 outline-none"
-                    value={descriptionInput}
-                    onChange={(e) => setDescriptionInput(e.target.value)}
-                    onKeyPress={(e) => e.key === "Enter" && handleSubmitDescription()}
-                    autoFocus
-                  />
-                  <button
-                    className="absolute top-2.5 right-3 text-white hover:text-green-400"
-                    onClick={handleSubmitDescription}
-                  >
-                    ✓
-                  </button>
+                  <div className="flex items-center w-full">
+                    <Sailboat className="absolute left-3 w-5 h-5 text-gray-400" />
+                    <input
+                      type="text"
+                      className="w-full bg-[#1c1c1c] text-white rounded-lg py-3 pl-10 pr-10 outline-none"
+                      value={descriptionInput}
+                      onChange={(e) => setDescriptionInput(e.target.value)}
+                      onKeyPress={(e) => e.key === "Enter" && handleSubmitDescription()}
+                      autoFocus
+                    />
+                    <button
+                      className="absolute right-3 text-white hover:text-green-400"
+                      onClick={handleSubmitDescription}
+                    >
+                      ✓
+                    </button>
+                  </div>
                 </>
               ) : (
                 <div
-                  className="bg-[#1c1c1c] py-2 px-4 rounded-lg flex justify-between items-center cursor-pointer"
+                  className="bg-[#1c1c1c] rounded-lg flex justify-between items-center cursor-pointer"
                   onClick={() => setEditDescriptionMode(true)}
                 >
-                  <span>{authUser.description || "Not set"}</span>
-                  <Pencil className="w-4 h-4 text-white" />
+                  <div className="flex items-center flex-1 py-2">
+                    <Sailboat className="ml-3 w-5 h-5 text-gray-400" />
+                    <span className="ml-2">{authUser.description || "Not set"}</span>
+                  </div>
+                  <Pencil className="mr-3 w-5 h-5 text-white" />
                 </div>
               )}
             </div>
@@ -192,12 +201,12 @@ const ProfilePopup = ({ isOpen, onClose }) => {
 
           {/* Email */}
           <div>
-            <label className="flex items-center gap-2 mb-1 text-sm">
-              <Mail className="w-4 h-4" />
-              Email Address
-            </label>
-            <div className="bg-[#1c1c1c] py-2 px-4 rounded-lg">
-              {authUser.email || "Not set"}
+            <div className="flex items-center ml-3 mb-1">
+              <label className="text-sm text-gray-400">Email Address</label>
+            </div>
+            <div className="flex items-center bg-[#1c1c1c] rounded-lg">
+              <Mail className="ml-3 w-5 h-5 text-gray-400" />
+              <span className="ml-2 py-2">{authUser.email || "Not set"}</span>
             </div>
           </div>
 
@@ -215,7 +224,6 @@ const ProfilePopup = ({ isOpen, onClose }) => {
               </div>
             </div>
           </div>
-
         </div>
       </div>
     </div>

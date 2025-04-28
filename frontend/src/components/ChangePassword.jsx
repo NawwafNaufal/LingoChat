@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { X, Eye, EyeOff } from 'lucide-react';
+import { X, Eye, EyeOff, Key } from 'lucide-react';
 
 export default function PasswordChangePopup({ isOpen, onClose }) {
   const [newPassword, setNewPassword] = useState('');
@@ -35,18 +35,18 @@ export default function PasswordChangePopup({ isOpen, onClose }) {
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 z-50">
-      <div className="bg-black w-80 max-w-md rounded-lg shadow-lg overflow-hidden border border-gray-800">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+     <div className="bg-[#1c1c1c] w-80 max-w-md rounded-lg shadow-lg overflow-hidden border border-gray-800 pb-5">
         {/* Header with title and close button */}
-        <div className="flex justify-between items-center p-5">
+        <div className="flex justify-between items-center pt-6 px-4 pb-6">
           <h2 className="text-xl font-medium text-white">Change Password</h2>
           <button onClick={onClose} className="text-gray-400 hover:text-white">
-            <X className="h-5 w-5" />
+            <X className="h-5 w-5 -mt-3" />
           </button>
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="px-5 pb-5">
+        <form onSubmit={handleSubmit} className="px-5 pb-4">
           {/* Error message */}
           {error && (
             <div className="mb-4 p-2 bg-red-900 bg-opacity-30 border border-red-700 rounded text-red-400 text-sm">
@@ -55,17 +55,20 @@ export default function PasswordChangePopup({ isOpen, onClose }) {
           )}
           
           {/* New Password Field */}
-          <div className="mb-4">
-            <label className="block text-gray-400 text-sm mb-2" htmlFor="new-password">
+          <div className="mb-3">
+            <label className="block text-gray-400 text-sm mb-1" htmlFor="new-password">
               New Password
             </label>
             <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <Key size={18} className="text-gray-500" />
+              </div>
               <input
                 id="new-password"
                 type={showNewPassword ? "text" : "password"}
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
-                className="w-full p-3 bg-gray-900 border border-gray-700 rounded text-white focus:outline-none focus:border-blue-500"
+                className="w-full pl-10 p-2 bg-[#111111] border border-gray-700 rounded text-white focus:outline-none focus:border-gray-500"
                 placeholder="Enter new password"
                 required
               />
@@ -80,17 +83,20 @@ export default function PasswordChangePopup({ isOpen, onClose }) {
           </div>
           
           {/* Confirm Password Field */}
-          <div className="mb-6">
-            <label className="block text-gray-400 text-sm mb-2" htmlFor="confirm-password">
+          <div className="mb-5">
+            <label className="block text-gray-400 text-sm mb-1" htmlFor="confirm-password">
               Confirm Password
             </label>
             <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <Key size={18} className="text-gray-500" />
+              </div>
               <input
                 id="confirm-password"
                 type={showConfirmPassword ? "text" : "password"}
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                className="w-full p-3 bg-gray-900 border border-gray-700 rounded text-white focus:outline-none focus:border-blue-500"
+                className="w-full pl-10 p-2 bg-[#111111] border border-gray-700 rounded text-white focus:outline-none focus:border-gray-500"
                 placeholder="Confirm new password"
                 required
               />
@@ -107,7 +113,7 @@ export default function PasswordChangePopup({ isOpen, onClose }) {
           {/* Submit Button */}
           <button
             type="submit"
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 rounded transition-colors"
+            className="w-full bg-[#222222] hover:bg-[#111111] text-white font-medium py-2 rounded transition-colors mt-4"
           >
             Update Password
           </button>

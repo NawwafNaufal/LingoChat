@@ -5,24 +5,42 @@ const userSchema = new mongoose.Schema(
     email: {
       type: String,
       required: true,
-      unique: true,
+      unique: true, // Menjaga email tetap unik
     },
     fullName: {
       type: String,
       required: true,
     },
-    description:{
+    description: {
       type: String,
-      required: false
+      required: false,
     },
     password: {
       type: String,
-      required: true,
+      required: function() {
+        // Password hanya wajib jika provider adalah 'local' atau tidak ada
+        return !this.provider || this.provider === 'local';
+      },
       minlength: 6,
     },
     profilePic: {
       type: String,
       default: "",
+    },
+    provider: {
+      type: String,
+      enum: ['local', 'google', 'facebook', 'github'], // Menambahkan GitHub sebagai provider
+      default: 'local',
+    },
+    googleId: {
+      type: String,
+      unique: true,
+      sparse: true, // Agar Google ID hanya unik jika ada
+    },
+    githubId: {
+      type: String,
+      unique: true,
+      sparse: true, // Agar GitHub ID hanya unik jika ada
     },
   },
   { timestamps: true }
