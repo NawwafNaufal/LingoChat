@@ -69,11 +69,28 @@ export const getUsersAll = async (req, res) => {
           { senderId: myId, receiverId: userToChatId },
           { senderId: userToChatId, receiverId: myId },
         ],
-      }).sort({ createdAt: 1 }); // Sort by time (oldest first)
+      }).sort({ createdAt: 1 }); 
   
       res.status(200).json(messages);
     } catch (error) {
       console.log("Error in getMessages controller: ", error.message);
       res.status(500).json({ error: "Internal server error" });
+    }
+  };
+
+  export const getUserProfile = async (req, res) => {
+    try {
+      const { userId } = req.params;
+  
+      const user = await User.findById(userId).select("-password");
+  
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+  
+      res.status(200).json(user);
+    } catch (error) {
+      console.error("Error in getUserProfile controller:", error.message);
+      res.status(500).json({ error: "Server error" });
     }
   };

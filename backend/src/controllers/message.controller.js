@@ -5,6 +5,7 @@ import cloudinary from "../lib/cloudinary.js";
 import { getReceiverSocketId, io } from "../lib/socket.js";
 import { translateMessage } from "../../utils/translate.js";
 import { autocorrectMessage } from "../../utils/Autocorrect/index.js";
+
 const labelToCode = {
   English: 'en',
   Indonesia: 'id',
@@ -79,5 +80,82 @@ export const sendMessage = async (req, res) => {
   } catch (error) {
     console.log("Error in sendMessage controller: ", error.message);
     res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+export const updateMessage = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { originalText, image, sourceLang, targetLang } = req.body;
+    const userId = req.user._id;
+
+    // Cari pesan yang ingin diupdate
+    const message = await Message.findById(id);
+
+    // Jika pesan tidak ditemukan
+    if (!message) {
+      return res.status(404).json({ error: "Pesan tidak ditemukan" });
+    }
+
+    // Verifikasi bahwa user adalah pengirim pesan
+    if (message.senderId.toString() !== userId.toString()) {
+      return res.status(403).json({ error: "Anda tidak memiliki izin untuk mengedit pesan ini" });
+    }
+
+    // Lakukan autocorrect dan translate seperti saat mengirim pesan baru
+    let correctedText = originalText;
+    let translatedText = originalText;
+
+    if (originalText) {
+      correctedText = await autocorrectMessage(originalText, sourceLang);
+      
+      translatedText = await translateMessage(correctedText, sourceLang, targetLang);
+      
+      message.originalText = originalText;
+      message.correctedText = correctedText;
+      message.text = translatedText;
+    }
+
+    // Update field lainnya
+    if (image !== undefined) message.image = image;
+    if (sourceLang !== undefined) message.sourceLang = labelToCode[sourceLang] || sourceLang;
+if (targetLang !== undefined) message.targetLang = labelToCode[targetLang] || targetLang;
+
+    // Simpan perubahan
+    await message.save();
+
+    res.status(200).json({ message: "Pesan berhasil diperbarui", updatedMessage: message });
+  } catch (error) {
+    console.error("Error updating message:", error);
+    res.status(500).json({ error: "Terjadi kesalahan saat memperbarui pesan" });
+  }
+};
+
+// Controller untuk delete pesan
+export const deleteMessage = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userId = req.user._id; // Asumsikan middleware auth sudah menyimpan user di req.user
+
+    // Cari pesan yang ingin dihapus
+    const message = await Message.findById(id);
+
+    // Jika pesan tidak ditemukan
+    if (!message) {
+      return res.status(404).json({ error: "Pesan tidak ditemukan" });
+    }
+
+    // Verifikasi bahwa user adalah pengirim pesan
+    if (message.senderId.toString() !== userId.toString()) {
+      return res.status(403).json({ error: "Anda tidak memiliki izin untuk menghapus pesan ini" });
+    }
+
+    // Hapus pesan
+    await Message.findByIdAndDelete(id);
+
+    res.status(200).json({ message: "Pesan berhasil dihapus" });
+  } catch (error) {
+    console.error("Error deleting message:", error);
+    res.status(500).json({ error: "Terjadi kesalahan saat menghapus pesan" });
   }
 };

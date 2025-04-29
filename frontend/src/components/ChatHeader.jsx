@@ -2,32 +2,46 @@ import { X } from "lucide-react";
 import { useAuthStore } from "../store/useAuthStore";
 import { useChatStore } from "../store/useChatStore";
 import { useState } from "react";
+import UserProfilePopup from "./skeletons/PopUpPorfile";
+
 const ChatHeader = ({ onLangChange }) => {
   const { selectedUser, setSelectedUser } = useChatStore();
   const { onlineUsers } = useAuthStore();
-
+  const [showUserProfile, setShowUserProfile] = useState(false);
+  
   const [sourceLang, setSourceLang] = useState("English");
   const [targetLang, setTargetLang] = useState("Indonesia");
 
   const handleSourceLangChange = (e) => {
     const newSource = e.target.value;
-    console.log("🚀 ~ handleSourceLangChange ~ newSource:", newSource)
     setSourceLang(newSource);
     onLangChange?.(newSource, targetLang);
   };
 
   const handleTargetLangChange = (e) => {
     const newTarget = e.target.value;
-    console.log("🚀 ~ handleTargetLangChange ~ newTarget:", newTarget)
     setTargetLang(newTarget);
     onLangChange?.(sourceLang, newTarget);
   };
+
+  const toggleUserProfile = (e) => {
+    e.preventDefault(); // Mencegah navigasi jika terjadi
+    e.stopPropagation(); // Mencegah event bubbling ke parent
+    setShowUserProfile(!showUserProfile);
+  };
+
+  if (!selectedUser) return null;
 
   return (
     <div className="p-2.5 border-b border-base-300">
       <div className="flex items-center justify-between">
         {/* Kiri: Avatar + Nama */}
-        <div className="flex items-center gap-3">
+        <div
+          className="flex items-center gap-3 cursor-pointer"
+          onClick={toggleUserProfile} // Tautan untuk memicu popup
+          role="button"
+          tabIndex="0"
+        >
           <div className="avatar">
             <div className="size-10 rounded-full relative">
               <img src={selectedUser.profilePic || "/avatar.png"} alt={selectedUser.fullName} />
@@ -70,9 +84,16 @@ const ChatHeader = ({ onLangChange }) => {
           </button>
         </div>
       </div>
+
+      {/* Popup User Profile */}
+      {showUserProfile && (
+        <UserProfilePopup
+          userId={selectedUser._id}
+          onClose={() => setShowUserProfile(false)}
+        />
+      )}
     </div>
   );
 };
-
 
 export default ChatHeader;
