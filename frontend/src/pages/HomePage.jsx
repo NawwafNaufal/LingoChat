@@ -13,9 +13,8 @@ const HomePage = () => {
         <div className="h-full">
           <Sidebar />
         </div>
-
         {/* Main chat area */}
-        <div className="flex-1 flex flex-col h-full">
+        <div className="flex-1 flex flex-col h-full ">
           {/* This will conditionally render either the empty state or the chat container */}
           {!selectedUser ? <NoChatSelected /> : <ChatContainer />}
         </div>

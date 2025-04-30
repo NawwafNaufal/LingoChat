@@ -1,0 +1,76 @@
+<svg viewBox="0 0 800 800" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background color -->
+  <rect width="100%" height="100%" fill="#101318"/>
+  
+  <!-- Chat bubbles -->
+  <path d="M120,150 Q150,120 180,150 L230,150 Q260,150 260,180 L260,230 Q260,260 230,260 L180,260 Q150,260 150,230 L150,180 Q150,150 120,150 Z" fill="none" stroke="#333" stroke-width="2"/>
+  <path d="M550,350 Q580,320 610,350 L660,350 Q690,350 690,380 L690,430 Q690,460 660,460 L610,460 Q580,460 580,430 L580,380 Q580,350 550,350 Z" fill="none" stroke="#333" stroke-width="2"/>
+  <path d="M200,500 Q230,470 260,500 L310,500 Q340,500 340,530 L340,580 Q340,610 310,610 L260,610 Q230,610 230,580 L230,530 Q230,500 200,500 Z" fill="none" stroke="#333" stroke-width="2"/>
+  
+  <!-- Speech bubbles -->
+  <circle cx="380" cy="240" r="50" fill="none" stroke="#333" stroke-width="2"/>
+  <path d="M350,280 L330,320" stroke="#333" stroke-width="2"/>
+  
+  <circle cx="600" cy="160" r="40" fill="none" stroke="#333" stroke-width="2"/>
+  <path d="M580,190 L560,230" stroke="#333" stroke-width="2"/>
+  
+  <!-- Phones -->
+  <rect x="450" y="500" width="70" height="120" rx="10" fill="none" stroke="#333" stroke-width="2"/>
+  <line x1="470" y1="510" x2="500" y2="510" stroke="#333" stroke-width="2"/>
+  <rect x="460" y="530" width="50" height="70" rx="2" fill="none" stroke="#333" stroke-width="2"/>
+  <circle cx="485" cy="620" r="8" fill="none" stroke="#333" stroke-width="2"/>
+  
+  <!-- Hearts -->
+  <path d="M80,350 Q110,300 140,350 T200,350 Q200,400 140,450 Q80,400 80,350 Z" fill="none" stroke="#333" stroke-width="2"/>
+  <path d="M660,550 Q680,520 700,550 T740,550 Q740,580 700,610 Q660,580 660,550 Z" fill="none" stroke="#333" stroke-width="2"/>
+  
+  <!-- Camera -->
+  <rect x="300" y="350" width="80" height="60" rx="5" fill="none" stroke="#333" stroke-width="2"/>
+  <circle cx="340" cy="380" r="15" fill="none" stroke="#333" stroke-width="2"/>
+  <rect x="315" y="340" width="20" height="10" fill="none" stroke="#333" stroke-width="2"/>
+  
+  <!-- Emoji -->
+  <circle cx="130" cy="440" r="25" fill="none" stroke="#333" stroke-width="2"/>
+  <circle cx="120" cy="430" r="3" fill="#333"/>
+  <circle cx="140" cy="430" r="3" fill="#333"/>
+  <path d="M120,450 Q130,460 140,450" fill="none" stroke="#333" stroke-width="2"/>
+  
+  <circle cx="500" cy="130" r="25" fill="none" stroke="#333" stroke-width="2"/>
+  <circle cx="490" cy="120" r="3" fill="#333"/>
+  <circle cx="510" cy="120" r="3" fill="#333"/>
+  <path d="M490,140 Q500,130 510,140" fill="none" stroke="#333" stroke-width="2" transform="rotate(180 500 135)"/>
+  
+  <!-- File attachments -->
+  <rect x="600" cy="650" width="60" height="80" rx="5" fill="none" stroke="#333" stroke-width="2"/>
+  <path d="M610,660 L650,660" stroke="#333" stroke-width="2"/>
+  <path d="M610,680 L640,680" stroke="#333" stroke-width="2"/>
+  <path d="M610,700 L630,700" stroke="#333" stroke-width="2"/>
+  
+  <!-- Images -->
+  <rect x="180" cy="680" width="70" height="60" rx="5" fill="none" stroke="#333" stroke-width="2"/>
+  <circle cx="195" cy="695" r="5" fill="#333"/>
+  <path d="M180,730 L210,710 L230,720 L250,690" fill="none" stroke="#333" stroke-width="2"/>
+  
+  <!-- Voice notes -->
+  <path d="M400,640 L400,680" stroke="#333" stroke-width="2"/>
+  <path d="M410,635 L410,685" stroke="#333" stroke-width="2"/>
+  <path d="M420,620 L420,700" stroke="#333" stroke-width="2"/>
+  <path d="M430,635 L430,685" stroke="#333" stroke-width="2"/>
+  <path d="M440,645 L440,675" stroke="#333" stroke-width="2"/>
+  
+  <!-- Send button -->
+  <circle cx="740" cy="740" r="20" fill="none" stroke="#333" stroke-width="2"/>
+  <path d="M730,740 L750,740 M740,730 L740,750" stroke="#333" stroke-width="2"/>
+  
+  <!-- Links -->
+  <path d="M50,230 L90,270" stroke="#333" stroke-width="2"/>
+  <circle cx="50" cy="230" r="5" fill="none" stroke="#333" stroke-width="2"/>
+  <circle cx="90" cy="270" r="5" fill="none" stroke="#333" stroke-width="2"/>
+  
+  <!-- More misc icons -->
+  <path d="M280,80 L300,60 L320,80 L300,100 Z" fill="none" stroke="#333" stroke-width="2"/>
+  <circle cx="50" cy="80" r="15" fill="none" stroke="#333" stroke-width="2"/>
+  <path d="M45,80 L55,80 M50,75 L50,85" stroke="#333" stroke-width="2"/>
+  <path d="M720,180 L750,180 L750,210 L720,210 Z" fill="none" stroke="#333" stroke-width="2"/>
+  <path d="M40,600 L60,600 L70,620 L30,620 Z" fill="none" stroke="#333" stroke-width="2"/>
+</svg>

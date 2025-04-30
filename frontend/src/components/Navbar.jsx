@@ -18,7 +18,8 @@ import SettingsPopup from "./Settings" // Import SettingsPopup
 const SidebarContext = createContext();
 
 export default function Layout({ children }) {
-  const [expanded, setExpanded] = useState(true);
+  // Changed initial state to false so sidebar is always closed on refresh/load
+  const [expanded, setExpanded] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -29,9 +30,7 @@ export default function Layout({ children }) {
   useEffect(() => {
     const checkIfMobile = () => {
       setIsMobile(window.innerWidth < 768);
-      if (window.innerWidth < 768) {
-        setExpanded(false);
-      }
+      // No need to set expanded here as it's already false by default
     };
     
     checkIfMobile();
@@ -40,6 +39,12 @@ export default function Layout({ children }) {
     
     return () => window.removeEventListener('resize', checkIfMobile);
   }, []);
+
+  // Optional: Add effect to ensure sidebar is closed after login
+  useEffect(() => {
+    // This will ensure sidebar is closed when auth state changes (login/logout)
+    setExpanded(false);
+  }, [authUser]);
 
   const toggleSidebar = () => {
     setExpanded(curr => !curr);
@@ -143,52 +148,55 @@ export default function Layout({ children }) {
                   />
                 </div>
               )}
-              
-              {/* Logout - only show if authenticated */}
+            </ul>
+          
+          {/* User profile section at bottom */}
+          <div className="mt-auto">
+              {/* Logout - Moved here, right above the profile */}
               {authUser && (
-                <div onClick={logout}>
+                <div onClick={logout} className="px-3 mb-2">
                   <SidebarItem 
                     icon={<LogOut className="w-5 h-5" />} 
                     text="Logout" 
                   />
                 </div>
               )}
-            </ul>
-          </SidebarContext.Provider>
-          
-          {/* User profile section at bottom */}
-          <div 
-            className="border-t border-gray-800 p-3 cursor-pointer hover:bg-gray-800 transition-colors"
-            onClick={openProfilePopup}
-          >
-            <div className="flex items-center gap-3">
-              {/* Avatar */}
-              <div className="w-8 h-8 rounded-full bg-gray-700 flex-shrink-0 overflow-hidden">
-                {authUser && authUser.profilePic ? (
-                  <img 
-                    src={authUser.profilePic} 
-                    alt="Profile" 
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center text-gray-400">
-                    <User className="w-4 h-4" />
+            
+            {/* User profile section */}
+            <div 
+              className="border-t border-gray-800 p-3 cursor-pointer hover:bg-gray-800 transition-colors"
+              onClick={openProfilePopup}
+            >
+              <div className="flex items-center gap-3">
+                {/* Avatar */}
+                <div className="w-8 h-8 rounded-full bg-gray-700 flex-shrink-0 overflow-hidden">
+                  {authUser && authUser.profilePic ? (
+                    <img 
+                      src={authUser.profilePic} 
+                      alt="Profile" 
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-gray-400">
+                      <User className="w-4 h-4" />
+                    </div>
+                  )}
+                </div>
+                
+                <div className={`overflow-hidden transition-all ${expanded ? "w-full" : "w-0"}`}>
+                  <div className="leading-4">
+                    <h4 className="font-semibold text-white">
+                      {authUser ? authUser.fullName || "User" : "Guest"}
+                    </h4>
+                    <span className="text-xs text-gray-400">
+                      {authUser ? authUser.email || "user@example.com" : "guest@example.com"}
+                    </span>
                   </div>
-                )}
-              </div>
-              
-              <div className={`overflow-hidden transition-all ${expanded ? "w-full" : "w-0"}`}>
-                <div className="leading-4">
-                  <h4 className="font-semibold text-white">
-                    {authUser ? authUser.fullName || "User" : "Guest"}
-                  </h4>
-                  <span className="text-xs text-gray-400">
-                    {authUser ? authUser.email || "user@example.com" : "guest@example.com"}
-                  </span>
                 </div>
               </div>
             </div>
-          </div>
+            </div>
+          </SidebarContext.Provider>
         </nav>
       </aside>
       
@@ -204,7 +212,7 @@ export default function Layout({ children }) {
       <div className={`flex-1 overflow-auto ${isMobile ? "w-full" : ""}`}>
         {/* Mobile header spacer to prevent content from hiding behind the hamburger button */}
         {isMobile && <div className="h-16"></div>}
-        <div className="p-4">
+        <div>
           {children}
         </div>
       </div>
@@ -227,6 +235,8 @@ export default function Layout({ children }) {
 // SidebarItem remains the same
 export function SidebarItem({ icon, text, active, alert }) {
   const { expanded } = useContext(SidebarContext);
+
+  
   
   return (
     <li
@@ -253,18 +263,6 @@ export function SidebarItem({ icon, text, active, alert }) {
             expanded ? "" : "top-2"
           }`}
         />
-      )}
-
-      {!expanded && (
-        <div
-          className={`
-            absolute left-full rounded-md px-2 py-1 ml-6 bg-gray-800 text-gray-200 text-sm
-            invisible opacity-20 -translate-x-3 transition-all
-            group-hover:visible group-hover:opacity-100 group-hover:translate-x-0
-          `}
-        >
-          {text}
-        </div>
       )}
     </li>
   );

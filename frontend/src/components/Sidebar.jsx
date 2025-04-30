@@ -1,8 +1,8 @@
 import { useEffect, useState, useRef } from "react";
 import { useChatStore } from "../store/useChatStore";
 import { useAuthStore } from "../store/useAuthStore";
-import SidebarSkeleton from "./skeletons/SidebarSkeleton";
-import { Users, Search } from "lucide-react";
+import SidebarSkeleton from "./skeletons/SidebarSkeletonProfile";
+import { Search } from "lucide-react";
 
 const Sidebar = () => {
   const { getUsers, users, selectedUser, setSelectedUser, isUsersLoading } = useChatStore();
@@ -77,8 +77,7 @@ const Sidebar = () => {
       >
         <div className="border-b border-base-300 w-full p-5">
           <div className="flex items-center gap-2">
-            <Users className="size-6" />
-            {!isCompactMode && <span className="font-medium">Contacts</span>}
+            {!isCompactMode && <span className="font-medium text-4xl">Contacts</span>}
           </div>
           
           {/* Name search input - hanya muncul jika tidak dalam mode compact */}
@@ -128,7 +127,7 @@ const Sidebar = () => {
                 <div className="text-left min-w-0">
                   <div className="font-medium truncate">{user.fullName}</div>
                   <div className="text-sm text-zinc-400">
-                    {onlineUsers.includes(user._id) ? "Online" : "Offline"}
+                    {user.description || "No description"}
                   </div>
                 </div>
               )}

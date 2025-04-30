@@ -1,13 +1,17 @@
 import { useState, useEffect } from 'react';
 import { X, User, Lock, Languages } from 'lucide-react';
 import PasswordChangePopup from './ChangePassword';
+import { useAuthStore } from '../store/useAuthStore'; // Sesuaikan dengan path file zustand store Anda
 
-export default function SettingsPopup({ isOpen, onClose, user }) {
+export default function SettingsPopup({ isOpen, onClose }) {
   const [selectedLanguage, setSelectedLanguage] = useState("English");
   const [isPasswordChangeOpen, setIsPasswordChangeOpen] = useState(false);
+  
+  // Ambil authUser dari store
+  const { authUser } = useAuthStore();
 
   useEffect(() => {
-    // Saat pertama kali komponen dimount, ambil bahasa dari localStorage
+    // Ambil bahasa dari localStorage
     const savedLanguage = localStorage.getItem('selectedLanguage');
     if (savedLanguage) {
       setSelectedLanguage(savedLanguage);
@@ -21,15 +25,21 @@ export default function SettingsPopup({ isOpen, onClose, user }) {
 
   if (!isOpen) return null;
 
-  const userData = user || {
-    name: "Naufal",
-    email: "Naufal23@gmail.com",
-    status: "This is Away",
-    profilePic: null
-  };
-
   const openPasswordChange = () => {
     setIsPasswordChangeOpen(true);
+  };
+
+  // Jika authUser belum tersedia, bisa tampilkan loading atau null
+  if (!authUser) {
+    return null;
+  }
+
+  // Extract user data yang dibutuhkan
+  const userData = {
+    name: authUser.fullName || authUser.name || "",
+    email: authUser.email || "",
+    status: authUser.description || authUser.status || "This is Away",
+    profilePic: authUser.profilePic || null
   };
 
   return (
@@ -54,7 +64,11 @@ export default function SettingsPopup({ isOpen, onClose, user }) {
                   alt="Profile" 
                   className="w-full h-full object-cover rounded-full"
                 />
-              ) : null}
+              ) : (
+                <div className="w-full h-full flex items-center justify-center bg-gray-700 text-white text-2xl">
+                  {userData.name.charAt(0).toUpperCase()}
+                </div>
+              )}
             </div>
             <div>
               <div className="font-medium text-white text-lg">{userData.name}</div>

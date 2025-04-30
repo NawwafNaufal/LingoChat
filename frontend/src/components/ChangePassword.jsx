@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { X, Eye, EyeOff, Key } from 'lucide-react';
+import { useAuthStore } from '../store/useAuthStore'; // Sesuaikan path sesuai struktur folder Anda
 
 export default function PasswordChangePopup({ isOpen, onClose }) {
   const [newPassword, setNewPassword] = useState('');
@@ -7,10 +8,13 @@ export default function PasswordChangePopup({ isOpen, onClose }) {
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  const { changePassword, isChangingPassword } = useAuthStore();
 
   if (!isOpen) return null;
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     
     // Simple validation
@@ -24,14 +28,21 @@ export default function PasswordChangePopup({ isOpen, onClose }) {
       return;
     }
     
-    // If validation passes
     setError('');
+    setIsSubmitting(true);
     
-    // Here you would typically make an API call to update the password
-    console.log('Password changed successfully');
-    
-    // Close the popup after successful change
-    onClose();
+    try {
+      await changePassword(newPassword);
+      
+      setNewPassword('');
+      setConfirmPassword('');
+      
+      onClose();
+    } catch (error) {
+      setError('Failed to change password. Please try again.',error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -40,7 +51,11 @@ export default function PasswordChangePopup({ isOpen, onClose }) {
         {/* Header with title and close button */}
         <div className="flex justify-between items-center pt-6 px-4 pb-6">
           <h2 className="text-xl font-medium text-white">Change Password</h2>
-          <button onClick={onClose} className="text-gray-400 hover:text-white">
+          <button 
+            onClick={onClose} 
+            className="text-gray-400 hover:text-white"
+            disabled={isSubmitting}
+          >
             <X className="h-5 w-5 -mt-3" />
           </button>
         </div>
@@ -71,11 +86,13 @@ export default function PasswordChangePopup({ isOpen, onClose }) {
                 className="w-full pl-10 p-2 bg-[#111111] border border-gray-700 rounded text-white focus:outline-none focus:border-gray-500"
                 placeholder="Enter new password"
                 required
+                disabled={isSubmitting}
               />
               <button
                 type="button"
                 className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400"
                 onClick={() => setShowNewPassword(!showNewPassword)}
+                disabled={isSubmitting}
               >
                 {showNewPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
@@ -99,11 +116,13 @@ export default function PasswordChangePopup({ isOpen, onClose }) {
                 className="w-full pl-10 p-2 bg-[#111111] border border-gray-700 rounded text-white focus:outline-none focus:border-gray-500"
                 placeholder="Confirm new password"
                 required
+                disabled={isSubmitting}
               />
               <button
                 type="button"
                 className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400"
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                disabled={isSubmitting}
               >
                 {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
@@ -114,8 +133,9 @@ export default function PasswordChangePopup({ isOpen, onClose }) {
           <button
             type="submit"
             className="w-full bg-[#222222] hover:bg-[#111111] text-white font-medium py-2 rounded transition-colors mt-4"
+            disabled={isSubmitting}
           >
-            Update Password
+            {isChangingPassword ? "Updating..." : "Update Password"}
           </button>
         </form>
       </div>

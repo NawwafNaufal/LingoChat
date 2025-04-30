@@ -1,7 +1,7 @@
 import { X } from "lucide-react";
 import { useAuthStore } from "../store/useAuthStore";
 import { useChatStore } from "../store/useChatStore";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import UserProfilePopup from "./skeletons/PopUpPorfile";
 
 const ChatHeader = ({ onLangChange }) => {
@@ -9,24 +9,37 @@ const ChatHeader = ({ onLangChange }) => {
   const { onlineUsers } = useAuthStore();
   const [showUserProfile, setShowUserProfile] = useState(false);
   
-  const [sourceLang, setSourceLang] = useState("English");
-  const [targetLang, setTargetLang] = useState("Indonesia");
+  // Load language preferences from localStorage or use defaults
+  const [sourceLang, setSourceLang] = useState(() => {
+    return localStorage.getItem("chatSourceLang") || "English";
+  });
+  
+  const [targetLang, setTargetLang] = useState(() => {
+    return localStorage.getItem("chatTargetLang") || "Indonesia";
+  });
+
+  // Initialize language settings on component mount
+  useEffect(() => {
+    onLangChange?.(sourceLang, targetLang);
+  }, [onLangChange, sourceLang, targetLang]);
 
   const handleSourceLangChange = (e) => {
     const newSource = e.target.value;
     setSourceLang(newSource);
+    localStorage.setItem("chatSourceLang", newSource);
     onLangChange?.(newSource, targetLang);
   };
 
   const handleTargetLangChange = (e) => {
     const newTarget = e.target.value;
     setTargetLang(newTarget);
+    localStorage.setItem("chatTargetLang", newTarget);
     onLangChange?.(sourceLang, newTarget);
   };
 
   const toggleUserProfile = (e) => {
-    e.preventDefault(); // Mencegah navigasi jika terjadi
-    e.stopPropagation(); // Mencegah event bubbling ke parent
+    e.preventDefault(); 
+    e.stopPropagation(); 
     setShowUserProfile(!showUserProfile);
   };
 
@@ -61,7 +74,7 @@ const ChatHeader = ({ onLangChange }) => {
             <select
               value={sourceLang}
               onChange={handleSourceLangChange}
-              className="bg-transparent text-white px-1 outline-none"
+              className="bg-[#111111]  text-white px-1 outline-none"
             >
               <option>English</option>
               <option>Indonesia</option>
@@ -71,7 +84,7 @@ const ChatHeader = ({ onLangChange }) => {
             <select
               value={targetLang}
               onChange={handleTargetLangChange}
-              className="bg-transparent text-white px-1 outline-none"
+              className="bg-[#111111] text-white px-1 outline-none"
             >
               <option>English</option>
               <option>Indonesia</option>

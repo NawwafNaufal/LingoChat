@@ -9,6 +9,7 @@ const MessageInput = ({ sourceLang, targetLang }) => {
   const fileInputRef = useRef(null);
   const { sendMessage } = useChatStore();
   const [isLoading, setIsLoading] = useState(false);
+  
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (!file.type.startsWith("image/")) {
@@ -30,26 +31,32 @@ const MessageInput = ({ sourceLang, targetLang }) => {
 
   const handleSendMessage = async (e) => {
     e.preventDefault();
-    if (!text.trim() && !imagePreview) return;
+    
+    // If no content or already loading, don't proceed
+    if ((!text.trim() && !imagePreview) || isLoading) return;
 
+    // Immediately clear input fields and set loading
+    const messageText = text.trim();
+    const messageImage = imagePreview;
+    
+    setText("");
+    setImagePreview(null);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+    
+    setIsLoading(true);
+    
     try {
-      setIsLoading(true);
       await sendMessage({
-        text: text.trim(),
-        image: imagePreview,
-        targetLang:targetLang,
-        sourceLang:sourceLang
-        
+        text: messageText,
+        image: messageImage,
+        targetLang: targetLang,
+        sourceLang: sourceLang
       });
-
-      // Clear form
-      setText("");
-      setImagePreview(null);
-      if (fileInputRef.current) fileInputRef.current.value = "";
     } catch (error) {
       console.error("Failed to send message:", error);
+      toast.error("Failed to send message. Please try again.");
     } finally {
-      setIsLoading(false); // always stop loading
+      setIsLoading(false);
     }
   };
 
@@ -83,6 +90,7 @@ const MessageInput = ({ sourceLang, targetLang }) => {
             placeholder="Type a message..."
             value={text}
             onChange={(e) => setText(e.target.value)}
+            disabled={isLoading}
           />
           <input
             type="file"
@@ -90,6 +98,7 @@ const MessageInput = ({ sourceLang, targetLang }) => {
             className="hidden"
             ref={fileInputRef}
             onChange={handleImageChange}
+            disabled={isLoading}
           />
 
           <button
@@ -97,14 +106,15 @@ const MessageInput = ({ sourceLang, targetLang }) => {
             className={`hidden sm:flex items-center justify-center w-10 h-10 rounded-full border border-zinc-800 bg-[#111111]
                      ${imagePreview ? "text-emerald-500" : "text-zinc-400"}`}
             onClick={() => fileInputRef.current?.click()}
+            disabled={isLoading}
           >
             <Image size={20} />
           </button>
         </div>
         <button
           type="submit"
-          className="flex items-center justify-center w-10 h-10 rounded-full border border-zinc-800 bg-[#111111] text-zinc-200 hover:bg-zinc-900"
-          disabled={!text.trim() && !imagePreview || isLoading}
+          className={`flex items-center justify-center w-10 h-10 rounded-full border border-zinc-800 bg-[#111111] text-zinc-200 hover:bg-zinc-900 ${isLoading ? 'opacity-50' : ''}`}
+          disabled={(!text.trim() && !imagePreview) || isLoading}
         >
           <Send size={18} />
         </button>

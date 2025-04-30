@@ -72,6 +72,31 @@ export const useAuthStore = create((set, get) => ({
     }
   },
 
+  changePassword: async (password) => {
+    set({ isChangingPassword: true });
+    try {
+      // Ambil email dari authUser yang sudah login
+      const { authUser } = get();
+      if (!authUser || !authUser.email) {
+        throw new Error("User tidak terautentikasi atau email tidak tersedia");
+      }
+      
+      // Kirim request dengan email pada URL parameter
+      const res = await axiosInstance.patch(`/auth/change-password/${authUser.email}`, { 
+        password 
+      });
+      
+      toast.success("Password berhasil diperbarui");
+      return res.data;
+    } catch (error) {
+      console.log("error in change password:", error);
+      toast.error(error.response?.data?.message || "Gagal mengubah password");
+      throw error;
+    } finally {
+      set({ isChangingPassword: false });
+    }
+  },
+
   updateProfile: async (data) => {
     set({ isUpdatingProfile: true });
     try {

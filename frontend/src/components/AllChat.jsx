@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import { useChatStore } from "../store/useChatStore";
 import { useAuthStore } from "../store/useAuthStore";
 import SidebarSkeleton from "./skeletons/SidebarSkeleton";
-import { Users } from "lucide-react";
+// import { MessageSquare } from "lucide-react";
 
 const Sidebar = () => {
   const { getUsersAll, users, selectedUser, setSelectedUser, isUsersLoading } = useChatStore();
@@ -84,8 +84,7 @@ const Sidebar = () => {
         {/* Header */}
         <div className="border-b border-base-300 w-full p-3">
           <div className="flex items-center gap-2">
-            <Users className="size-6" />
-            {!isCompactMode && <span className="font-medium">Contacts</span>}
+            {!isCompactMode && <span className="font-medium text-4xl">Chats</span>}
           </div>
           
           {/* Search Input - hanya muncul jika tidak dalam mode compact */}

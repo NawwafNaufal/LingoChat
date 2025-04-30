@@ -1,4 +1,3 @@
-import { Users } from "lucide-react";
 
 const SidebarSkeleton = () => {
   // Create 8 skeleton items
@@ -12,8 +11,7 @@ const SidebarSkeleton = () => {
       {/* Header */}
       <div className="border-b border-base-300 w-full p-5">
         <div className="flex items-center gap-2">
-          <Users className="size-6" />
-          <span className="font-medium hidden lg:block">Contacts</span>
+          <span className="font-medium hidden text-4xl lg:block">Chats</span>
         </div>
         
         {/* Search Input Skeleton */}
