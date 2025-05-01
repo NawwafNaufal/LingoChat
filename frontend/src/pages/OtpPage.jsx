@@ -8,7 +8,7 @@ import axios from "axios";
 axios.defaults.headers.common['Content-Type'] = 'application/json';
 
 const EmailVerificationPage = () => {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const [isVerifying, setIsVerifying] = useState(false);
   const [otp, setOtp] = useState(['', '', '', '', '']);
   const [email, setEmail] = useState("");
@@ -59,12 +59,6 @@ const EmailVerificationPage = () => {
         setNotification(prev => ({ ...prev, show: false }));
       }, duration);
     }
-  };
-  
-  const handleLangChange = (e) => {
-    const lang = e.target.value;
-    i18n.changeLanguage(lang);
-    localStorage.setItem("lang", lang);
   };
   
   const handleOtpChange = (index, value) => {
@@ -157,7 +151,6 @@ const EmailVerificationPage = () => {
     }
   };
   
-  // Mendapatkan komponen ikon yang sesuai dengan tipe notifikasi
   const getNotificationIcon = () => {
     switch (notification.type) {
       case "success":
@@ -189,16 +182,7 @@ const EmailVerificationPage = () => {
     <div className="h-screen flex justify-center items-center bg-black text-white">
       {/* Header */}
       <div className="absolute top-0 left-0 w-full p-4 flex justify-between items-center">
-        <div className="font-bold text-xl">N-G</div>
-        <select
-          value={i18n.language}
-          onChange={handleLangChange}
-          className="select select-bordered select-sm bg-transparent border-gray-700"
-        >
-          <option value="en">English</option>
-          <option value="id">Indonesia</option>
-          <option value="es">Spanish</option>
-        </select>
+      <span className="text-3xl font-bold">N-G</span>
       </div>
 
       {/* Notifikasi (Success, Error, atau Warning) */}
@@ -252,7 +236,7 @@ const EmailVerificationPage = () => {
           <div className="flex justify-center">
             <button 
               type="submit" 
-              className="btn w-96 rounded-lg bg-gray-700 hover:bg-gray-600 border-none text-white" 
+              className="btn w-full bg-[#111111] rounded-md hover:bg-[#222222] border-none mt-6 text-white" 
               disabled={isVerifying || otp.some(digit => digit === '')}
             >
               {isVerifying ? (
@@ -267,8 +251,9 @@ const EmailVerificationPage = () => {
           </div>
 
           <div className="text-center">
+              {t("Need to change your email?")}
             <Link to="/forgot-password" className="text-gray-400 hover:underline">
-              {t("Back to Forgot Password")}
+              {t("Return to sign-up")}
             </Link>
           </div>
         </form>

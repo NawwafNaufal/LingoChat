@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { useAuthStore } from "../store/useAuthStore";
 import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff, Loader2, Lock, Mail } from "lucide-react";
-import toast from "react-hot-toast"; // Sekalian import langsung (lebih rapi)
+import toast from "react-hot-toast";
 
 const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -13,6 +13,12 @@ const LoginPage = () => {
   const { t, i18n } = useTranslation();
 
   useEffect(() => {
+    // Check if language is already set in localStorage
+    const savedLang = localStorage.getItem("lang");
+    if (savedLang) {
+      i18n.changeLanguage(savedLang);
+    }
+    
     const params = new URLSearchParams(window.location.search);
     const token = params.get('token');
     const email = params.get('email');
@@ -40,9 +46,9 @@ const LoginPage = () => {
       window.history.replaceState({}, document.title, window.location.pathname);
 
       // Redirect ke dashboard
-      navigate('/dashboard');
+      navigate('/user');
     }
-  }, [navigate, setAuthUser, connectSocket]);
+  }, [navigate, setAuthUser, connectSocket, i18n]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -52,7 +58,17 @@ const LoginPage = () => {
   const handleLangChange = (e) => {
     const lang = e.target.value;
     i18n.changeLanguage(lang);
+    
     localStorage.setItem("lang", lang);
+    
+    const langMapping = {
+      "en": "English",
+      "id": "Indonesian",
+      "es": "Spanish"
+    };
+    
+    // Also save the display name for the settings component
+    localStorage.setItem("selectedLanguage", langMapping[lang]);
   };
 
   const handleGoogleLogin = () => {
@@ -67,11 +83,11 @@ const LoginPage = () => {
     <div className="h-screen flex justify-center items-center bg-black text-white">
       {/* Header */}
       <div className="absolute top-0 left-0 w-full p-4 flex justify-between items-center">
-        <div className="font-bold text-xl">N-G</div>
+        <span className="text-3xl font-bold">N-G</span>
         <select
           value={i18n.language}
           onChange={handleLangChange}
-          className="select select-bordered select-sm bg-transparent border-gray-700"
+          className="select select-bordered bg-[#111111] text-white select-sm rounded-md border-gray-700"
         >
           <option value="en">English</option>
           <option value="id">Indonesia</option>
@@ -119,9 +135,9 @@ const LoginPage = () => {
         {/* Login Form */}
         <form onSubmit={handleSubmit} className="space-y-3">
           {/* Email Input */}
-          <div className="form-control mb-2">
+          <div className="form-control mb-2 ">
             <label className="label">
-              <span className="label-text text-gray-300 font-medium">{t("email")}</span>
+              <span className="label-text  text-gray-300 font-medium">{t("email")}</span>
             </label>
             <div className="relative">
               <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 h-5 w-5" />
@@ -129,8 +145,8 @@ const LoginPage = () => {
                 type="email"
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                placeholder="you@example.com"
-                className="input input-bordered w-full pl-10 bg-transparent border-gray-700"
+                placeholder="Your email address"
+                className="input input-bordered w-full rounded-md pl-10 bg-transparent border-gray-700"
               />
             </div>
           </div>
@@ -149,8 +165,8 @@ const LoginPage = () => {
                 type={showPassword ? "text" : "password"}
                 value={formData.password}
                 onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                placeholder="••••••••"
-                className="input input-bordered w-full pl-10 bg-transparent border-gray-700"
+                placeholder="Your Password"
+                className="input input-bordered w-full rounded-md pl-10 bg-transparent border-gray-700"
               />
               <button
                 type="button"
@@ -161,11 +177,11 @@ const LoginPage = () => {
               </button>
             </div>
           </div>
-
+          <div className="h-1" />
           {/* Submit Button */}
           <button
             type="submit"
-            className="btn w-full bg-gray-700 hover:bg-gray-600 border-none text-white"
+            className="btn w-full bg-[#111111] rounded-md hover:bg-[#222222] border-none mt-6 text-white"
             disabled={isLoggingIn}
           >
             {isLoggingIn ? (
@@ -174,17 +190,17 @@ const LoginPage = () => {
                 {t("loading")}
               </>
             ) : (
-              t("sign_in")
+              t("Log In")
             )}
           </button>
         </form>
 
         {/* Sign up Link */}
-        <div className="text-center mt-6">
+        <div className="text-center ">
           <p className="text-gray-400">
-            {t("no_account")}{" "}
+            {t("Don't have an account?")}{" "}
             <Link to="/signup" className="text-blue-400 hover:underline">
-              {t("create_account")}
+              {t("Sign up")}
             </Link>
           </p>
         </div>

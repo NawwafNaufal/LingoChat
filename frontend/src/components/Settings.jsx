@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { X, User, Lock, Languages } from 'lucide-react';
 import PasswordChangePopup from './ChangePassword';
-import { useAuthStore } from '../store/useAuthStore'; // Sesuaikan dengan path file zustand store Anda
+import { useAuthStore } from '../store/useAuthStore';
+import { useTranslation } from 'react-i18next'; // Import i18n
 
 export default function SettingsPopup({ isOpen, onClose }) {
   const [selectedLanguage, setSelectedLanguage] = useState("English");
@@ -9,18 +10,49 @@ export default function SettingsPopup({ isOpen, onClose }) {
   
   // Ambil authUser dari store
   const { authUser } = useAuthStore();
+  // Get i18n functions
+  const { i18n } = useTranslation();
+
+  // Language mapping for consistency between i18n codes and display names
+  const languageMapping = {
+    "English": "en",
+    "Indonesian": "id",
+    "Spanish": "es",
+    // Reverse mapping
+    "en": "English",
+    "id": "Indonesian",
+    "es": "Spanish"
+  };
 
   useEffect(() => {
-    // Ambil bahasa dari localStorage
-    const savedLanguage = localStorage.getItem('selectedLanguage');
-    if (savedLanguage) {
-      setSelectedLanguage(savedLanguage);
+    // Try to get language from localStorage first using the consistent key from login page
+    const savedLang = localStorage.getItem('lang');
+    
+    if (savedLang) {
+      // Convert i18n language code to display name
+      setSelectedLanguage(languageMapping[savedLang] || "English");
+    } else {
+      // Fallback to the selectedLanguage in localStorage if exists
+      const savedDisplayLanguage = localStorage.getItem('selectedLanguage');
+      if (savedDisplayLanguage) {
+        setSelectedLanguage(savedDisplayLanguage);
+      }
     }
   }, []);
 
   const handleLanguageSelect = (language) => {
+    // Update the displayed language
     setSelectedLanguage(language);
-    localStorage.setItem('selectedLanguage', language); // Simpan ke localStorage
+    
+    // Save display language
+    localStorage.setItem('selectedLanguage', language);
+    
+    // Also update i18n language using the consistent key
+    const langCode = languageMapping[language];
+    if (langCode) {
+      i18n.changeLanguage(langCode);
+      localStorage.setItem('lang', langCode);
+    }
   };
 
   if (!isOpen) return null;

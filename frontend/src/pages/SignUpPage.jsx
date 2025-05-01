@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useAuthStore } from "../store/useAuthStore";
 import { Eye, EyeOff, Loader2, Lock, Mail, User } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import toast from "react-hot-toast";
 
@@ -16,6 +16,7 @@ const SignUpPage = () => {
 
   const { signup, isSigningUp } = useAuthStore();
   const { t, i18n } = useTranslation();
+  const navigate = useNavigate();
 
   const handleLangChange = (e) => {
     const lang = e.target.value;
@@ -33,16 +34,28 @@ const SignUpPage = () => {
     return true;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const success = validateForm();
 
-    if (success === true) signup(formData);
+    if (success === true) {
+      try {
+        // Don't store auth user after signup
+        await signup(formData, false);
+        
+        toast.success(t("Registration successful! Please login."));
+        
+        // Navigate to login page
+        navigate("/login");
+      } catch (error) {
+        console.error("Signup error:", error);
+      }
+    }
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center relative">
+    <div className="h-screen flex justify-center items-center bg-black text-white">
       {/* N-G text in top-left */}
       <div className="absolute top-0 left-0 p-4">
         <span className="text-3xl font-bold">N-G</span>
@@ -53,7 +66,7 @@ const SignUpPage = () => {
         <select
           value={i18n.language}
           onChange={handleLangChange}
-          className="select select-bordered select-sm bg-transparent"
+          className="select select-bordered bg-[#111111]text-white select-sm rounded-md border-gray-700"
         >
           <option value="en">English</option>
           <option value="id">Indonesia</option>
@@ -74,7 +87,7 @@ const SignUpPage = () => {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="form-control">
               <label className="label py-1">
-                <span className="label-text font-medium">{t("full_name")}</span>
+                <span className="label-text font-medium">{t("Username")}</span>
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -82,8 +95,8 @@ const SignUpPage = () => {
                 </div>
                 <input
                   type="text"
-                  className="input input-bordered w-full pl-10"
-                  placeholder={t("name_placeholder")}
+                  className="input input-bordered w-full rounded-md pl-10 bg-transparent border-gray-7000"
+                  placeholder={t("Username")}
                   value={formData.fullName}
                   onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
                 />
@@ -100,8 +113,8 @@ const SignUpPage = () => {
                 </div>
                 <input
                   type="email"
-                  className="input input-bordered w-full pl-10"
-                  placeholder="you@example.com"
+                  className="input input-bordered w-full rounded-md pl-10 bg-transparent border-gray-7000"
+                  placeholder="Email"
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 />
@@ -118,8 +131,8 @@ const SignUpPage = () => {
                 </div>
                 <input
                   type={showPassword ? "text" : "password"}
-                  className="input input-bordered w-full pl-10"
-                  placeholder="••••••••"
+                  className="input input-bordered w-full rounded-md pl-10 bg-transparent border-gray-7000"
+                  placeholder="Password"
                   value={formData.password}
                   onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                 />
@@ -136,24 +149,24 @@ const SignUpPage = () => {
                 </button>
               </div>
             </div>
-
-            <button type="submit" className="btn btn-primary w-full mt-4" disabled={isSigningUp}>
+            <div className="h-1" />
+            <button type="submit" className="btn w-full bg-[#111111] rounded-md hover:bg-[#222222] border-none mt-6 text-white" disabled={isSigningUp}>
               {isSigningUp ? (
                 <>
                   <Loader2 className="size-5 animate-spin" />
                   {t("loading")}
                 </>
               ) : (
-                t("create_account")
+                t("Sign Up")
               )}
             </button>
           </form>
 
-          <div className="text-center mt-4">
+          <div className="text-center">
             <p className="text-base-content/60">
-              {t("already_have_account")}{" "}
+              {t("Already have an account?")}{" "}
               <Link to="/login" className="link link-primary">
-                {t("sign_in")}
+                {t("Log in")}
               </Link>
             </p>
           </div>

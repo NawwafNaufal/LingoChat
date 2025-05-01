@@ -13,7 +13,7 @@ const ResetPasswordPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   
   // Cek status verifikasi dan email saat komponen dipasang
   useEffect(() => {
@@ -99,27 +99,12 @@ const ResetPasswordPage = () => {
     }
   };
 
-  const handleLangChange = (e) => {
-    const lang = e.target.value;
-    i18n.changeLanguage(lang);
-    localStorage.setItem("lang", lang);
-  };
 
   return (
     <div className="h-screen flex justify-center items-center bg-black text-white">
       {/* Header with logo and language selector */}
       <div className="absolute top-0 left-0 w-full p-4 flex justify-between items-center">
         <div className="font-bold text-xl">N-3</div>
-
-        <select
-          value={i18n.language}
-          onChange={handleLangChange}
-          className="select select-bordered select-sm bg-transparent border-gray-700"
-        >
-          <option value="en">English</option>
-          <option value="id">Indonesia</option>
-          <option value="es">Spanish</option>
-        </select>
       </div>
 
       {/* Success Notification */}
@@ -189,7 +174,7 @@ const ResetPasswordPage = () => {
           {/* Submit */}
           <button 
             type="submit" 
-            className="btn w-full bg-gray-700 hover:bg-gray-600 border-none text-white" 
+            className="btn w-full bg-[#111111] rounded-md hover:bg-[#222222] border-none mt-6 text-white" 
             disabled={isResetting || !formData.password || !formData.confirmPassword || formData.password !== formData.confirmPassword}
           >
             {isResetting ? (
@@ -204,7 +189,7 @@ const ResetPasswordPage = () => {
         </form>
 
         {/* Bottom Link */}
-        <div className="text-center mt-6">
+        <div className="text-center">
           <p className="text-gray-400">
             <Link to="/forgot-password" className="text-blue-400 hover:underline">
               {t("Back to Forgot Password")}
