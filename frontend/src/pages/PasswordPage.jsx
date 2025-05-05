@@ -101,10 +101,10 @@ const ResetPasswordPage = () => {
 
 
   return (
-    <div className="h-screen flex justify-center items-center bg-black text-white">
+    <div className="h-screen flex justify-center items-center bg-white text-white">
       {/* Header with logo and language selector */}
       <div className="absolute top-0 left-0 w-full p-4 flex justify-between items-center">
-        <div className="font-bold text-xl">N-3</div>
+        <div className="text-4xl font-bold text-[#1AA3D8]">N-3</div>
       </div>
 
       {/* Success Notification */}
@@ -120,9 +120,9 @@ const ResetPasswordPage = () => {
         <div className="mb-8">
           <div className="flex flex-col items-center justify-center text-center gap-3">
             <div>
-              <h1 className="text-4xl font-bold text-white">{t("Set New Password")}</h1>
-              <p className="text-gray-400 text-sm mt-2">{t("For")} {email}</p>
-              <p className="text-gray-400 text-sm">{t("Password must be at least 8 characters")}</p>
+              <h1 className="text-4xl font-bold text-black">{t("Set New Password")}</h1>
+              <p className="text-black text-sm mt-2">{t("For")} {email}</p>
+              <p className="text-black text-sm">{t("Password must be at least 8 characters")}</p>
             </div>
           </div>
         </div>
@@ -132,15 +132,15 @@ const ResetPasswordPage = () => {
           {/* Password */}
           <div className="form-control mb-2">
             <label className="label">
-              <span className="label-text text-gray-300 font-medium">{t("Password")}</span>
+              <span className="label-text text-black font-medium">{t("Password")}</span>
             </label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Lock className="h-5 w-5 text-gray-500" />
+                <Lock className="h-5 w-5 text-black" />
               </div>
               <input
                 type="password"
-                className="input input-bordered w-full pl-10 bg-transparent border-gray-700"
+                className="input input-bordered shadow-md w-full pl-10 rounded-md bg-transparent border-gray-200 focus:outline-none focus:border-[#0088CC]"
                 placeholder={t("Enter new password")}
                 value={formData.password}
                 onChange={(e) => setFormData({ ...formData, password: e.target.value })}
@@ -153,15 +153,15 @@ const ResetPasswordPage = () => {
           {/* Confirm Password */}
           <div className="form-control mb-2">
             <label className="label">
-              <span className="label-text text-gray-300 font-medium">{t("Confirm Password")}</span>
+              <span className="label-text text-black font-medium">{t("Confirm Password")}</span>
             </label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Lock className="h-5 w-5 text-gray-500" />
+                <Lock className="h-5 w-5 text-black" />
               </div>
               <input
                 type="password"
-                className="input input-bordered w-full pl-10 bg-transparent border-gray-700"
+                className="input input-bordered shadow-md w-full pl-10 rounded-md bg-transparent border-gray-200 focus:outline-none focus:border-[#0088CC]"
                 placeholder={t("Confirm your password")}
                 value={formData.confirmPassword}
                 onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
@@ -170,11 +170,11 @@ const ResetPasswordPage = () => {
               />
             </div>
           </div>
-
+          <div className="h-1" />
           {/* Submit */}
           <button 
             type="submit" 
-            className="btn w-full bg-[#111111] rounded-md hover:bg-[#222222] border-none mt-6 text-white" 
+            className="btn w-full bg-[#1AA3D8] rounded-md hover:bg-[#0088CC] border-none mt-1 text-white disabled:text-white disabled:opacity-100 disabled:bg-[#1AA3D8]" 
             disabled={isResetting || !formData.password || !formData.confirmPassword || formData.password !== formData.confirmPassword}
           >
             {isResetting ? (
@@ -191,7 +191,7 @@ const ResetPasswordPage = () => {
         {/* Bottom Link */}
         <div className="text-center">
           <p className="text-gray-400">
-            <Link to="/forgot-password" className="text-blue-400 hover:underline">
+            <Link to="/verifEmail" className="text-blue-400 hover:underline">
               {t("Back to Forgot Password")}
             </Link>
           </p>

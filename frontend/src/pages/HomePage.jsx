@@ -7,7 +7,7 @@ const HomePage = () => {
   const { selectedUser } = useChatStore();
 
   return (
-    <div className="h-screen bg-[#111111] overflow-hidden">
+    <div className="h-screen bg-[#fff] overflow-hidden">
       <div className="flex h-full w-full">
         {/* Left sidebar with contacts - matches the screenshot */}
         <div className="h-full">

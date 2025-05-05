@@ -75,13 +75,13 @@ const ProfilePopup = ({ isOpen, onClose }) => {
       className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
       onClick={handleBackdropClick}
     >
-      <div className="bg-[#1c1c1c] rounded-lg px-6 py-8 w-full max-w-sm text-white max-h-[90vh] overflow-y-auto relative">
+      <div className="bg-[#fff] rounded-lg px-6 py-8 w-full max-w-sm text-black max-h-[90vh] overflow-y-auto relative">
         {/* Close Button */}
         <button
-          className="absolute top-4 right-4 p-1 rounded-full hover:bg-[#1c1c1c] transition"
+          className="absolute top-4 right-4 p-1 rounded-full hover:bg-[#fff] transition"
           onClick={onClose}
         >
-          <X className="w-5 h-5 text-white" />
+          <X className="w-5 h-5 text-black" />
         </button>
 
         <h1 className="text-center text-lg font-semibold mb-4">
@@ -94,13 +94,13 @@ const ProfilePopup = ({ isOpen, onClose }) => {
             <img
               src={selectedImg || authUser.profilePic || "/avatar.png"}
               alt="Profile"
-              className="w-28 h-28 rounded-full object-cover border-2 border-white"
+              className="w-28 h-28 rounded-full object-cover border-2 border-[#e9e9e9]"
             />
             <label
               htmlFor="avatar-upload"
-              className="absolute bottom-0 right-0 bg-[#1c1c1c] p-2 rounded-full cursor-pointer hover:scale-105 transition"
+              className="absolute bottom-0 right-0 bg-[#e9e9e9] p-2 rounded-full cursor-pointer hover:scale-105 transition"
             >
-              <Camera className="w-5 h-5 text-white" />
+              <Camera className="w-5 h-5 text-black" />
               <input
                 type="file"
                 id="avatar-upload"
@@ -111,7 +111,7 @@ const ProfilePopup = ({ isOpen, onClose }) => {
               />
             </label>
           </div>
-          <p className="text-sm text-gray-400">
+          <p className="text-sm text-gray-600">
             Click the camera icon to update your photo
           </p>
         </div>
@@ -120,7 +120,7 @@ const ProfilePopup = ({ isOpen, onClose }) => {
           {/* Full Name */}
           <div>
             <div className="flex items-center ml-3 mb-1">
-              <label className="text-sm text-gray-400">Username</label>
+              <label className="text-sm text-gray-600">Username</label>
             </div>
             <div className="relative">
               {editNameMode ? (
@@ -129,14 +129,14 @@ const ProfilePopup = ({ isOpen, onClose }) => {
                     <User className="absolute left-3 w-5 h-5 text-gray-400" />
                     <input
                       type="text"
-                      className="w-full bg-[#1c1c1c] text-white rounded-lg py-3 pl-10 pr-10 outline-none"
+                      className="w-full bg-[#fff] text-black rounded-lg py-3 pl-10 pr-10 outline-none"
                       value={fullNameInput}
                       onChange={(e) => setFullNameInput(e.target.value)}
                       onKeyPress={(e) => e.key === "Enter" && handleSubmitName()}
                       autoFocus
                     />
                     <button
-                      className="absolute right-3 text-white hover:text-green-400"
+                      className="absolute right-3 text-black hover:text-green-400"
                       onClick={handleSubmitName}
                     >
                       ✓
@@ -145,14 +145,14 @@ const ProfilePopup = ({ isOpen, onClose }) => {
                 </>
               ) : (
                 <div
-                  className="bg-[#1c1c1c] rounded-lg flex justify-between items-center cursor-pointer"
+                  className="bg-[#fff] rounded-lg flex justify-between items-center cursor-pointer"
                   onClick={() => setEditNameMode(true)}
                 >
                   <div className="flex items-center flex-1 py-2">
-                    <User className="ml-3 w-5 h-5 text-gray-400" />
+                    <User className="ml-3 w-5 h-5 text-black" />
                     <span className="ml-2">{authUser.fullName || "Not set"}</span>
                   </div>
-                  <Pencil className="mr-3 w-5 h-5 text-white" />
+                  <Pencil className="mr-3 w-5 h-5 text-black" />
                 </div>
               )}
             </div>
@@ -161,16 +161,16 @@ const ProfilePopup = ({ isOpen, onClose }) => {
           {/* Description */}
           <div>
             <div className="flex items-center ml-3 mb-1">
-              <label className="text-sm text-gray-400">About</label>
+              <label className="text-sm text-gray-600">About</label>
             </div>
             <div className="relative">
               {editDescriptionMode ? (
                 <>
                   <div className="flex items-center w-full">
-                    <Sailboat className="absolute left-3 w-5 h-5 text-gray-400" />
+                    <Sailboat className="absolute left-3 w-5 h-5 text-gray-600" />
                     <input
                       type="text"
-                      className="w-full bg-[#1c1c1c] text-white rounded-lg py-3 pl-10 pr-10 outline-none"
+                      className="w-full bg-[#fff] text-white rounded-lg py-3 pl-10 pr-10 outline-none"
                       value={descriptionInput}
                       onChange={(e) => setDescriptionInput(e.target.value)}
                       onKeyPress={(e) => e.key === "Enter" && handleSubmitDescription()}
@@ -186,14 +186,14 @@ const ProfilePopup = ({ isOpen, onClose }) => {
                 </>
               ) : (
                 <div
-                  className="bg-[#1c1c1c] rounded-lg flex justify-between items-center cursor-pointer"
+                  className="bg-[#fff] rounded-lg flex justify-between items-center cursor-pointer"
                   onClick={() => setEditDescriptionMode(true)}
                 >
                   <div className="flex items-center flex-1 py-2">
-                    <Sailboat className="ml-3 w-5 h-5 text-gray-400" />
-                    <span className="ml-2">{authUser.description || "Not set"}</span>
+                    <Sailboat className="ml-3 w-5 h-5 text-gray-600" />
+                    <span className="ml-2 text-black">{authUser.description || "Not set"}</span>
                   </div>
-                  <Pencil className="mr-3 w-5 h-5 text-white" />
+                  <Pencil className="mr-3 w-5 h-5 text-black" />
                 </div>
               )}
             </div>
@@ -202,16 +202,16 @@ const ProfilePopup = ({ isOpen, onClose }) => {
           {/* Email */}
           <div>
             <div className="flex items-center ml-3 mb-1">
-              <label className="text-sm text-gray-400">Email Address</label>
+              <label className="text-sm text-gray-600">Email Address</label>
             </div>
-            <div className="flex items-center bg-[#1c1c1c] rounded-lg">
+            <div className="flex items-center bg-[#fff] rounded-lg">
               <Mail className="ml-3 w-5 h-5 text-gray-400" />
-              <span className="ml-2 py-2">{authUser.email || "Not set"}</span>
+              <span className="ml-2 py-2 text-black">{authUser.email || "Not set"}</span>
             </div>
           </div>
 
           {/* Account Info */}
-          <div className="mt-6 bg-[#1c1c1c] rounded-xl p-4">
+          <div className="mt-6 bg-[#fff] rounded-xl p-4">
             <h2 className="text-base font-semibold mb-3">Account Information</h2>
             <div className="text-sm space-y-2">
               <div className="flex justify-between">

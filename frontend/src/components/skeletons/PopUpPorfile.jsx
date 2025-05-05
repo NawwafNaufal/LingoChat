@@ -32,13 +32,13 @@ const PopUpPorfile = ({ userId, onClose }) => {
       className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center"
       onClick={handleContainerClick}
     >
-      <div className="bg-[#1c1c1c] rounded-lg w-full max-w-xs p-6 relative">
+      <div className="bg-[#fff] rounded-lg w-full max-w-xs p-6 relative">
         <button
           onClick={(e) => {
             e.stopPropagation();
             onClose();
           }}
-          className="absolute top-4 right-4 text-gray-400 hover:text-white"
+          className="absolute top-4 right-4 text-black"
         >
           <X size={20} />
         </button>
@@ -50,32 +50,32 @@ const PopUpPorfile = ({ userId, onClose }) => {
         ) : error ? (
           <div className="text-red-400 py-6 text-center">{error}</div>
         ) : userProfile ? (
-          <div className="flex flex-col items-center">
+          <div className="flex flex-col items-center text-black">
             {/* Avatar */}
             <div className="avatar mb-3">
-              <div className="w-20 h-20 rounded-full overflow-hidden">
+              <div className="w-20 h-20 rounded-full overflow-hidden text-black">
                 <img
                   src={userProfile.profilePic || "/avatar.png"}
                   alt={userProfile.fullName}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover text-black"
                 />
               </div>
             </div>
 
             {/* Nama dan Deskripsi */}
             <h2 className="text-lg font-bold mb-1">{userProfile.fullName}</h2>
-            <p className="text-gray-300 text-center text-sm mb-2">
+            <p className="text-black text-center text-sm mb-2">
               {userProfile.description || "No description"}
             </p>
 
             {/* Info Email & Status */}
             <div className="w-full border-t border-gray-700 pt-3 mt-3 space-y-3">
               <div>
-                <label className="text-gray-400 text-sm">Email</label>
-                <p className="text-white text-sm">{userProfile.email}</p>
+                <label className="text-gray-600 text-sm">Email</label>
+                <p className="text-black text-sm">{userProfile.email}</p>
               </div>
               <div>
-              <label className="text-gray-400 text-sm">Status Akun</label>
+              <label className="text-gray-600 text-sm">Status Akun</label>
   <p className="bg-green-500/20 text-green-400 px-3 py-1 rounded-full text-sm mt-1 text-center w-fit">
     Aktif
   </p>

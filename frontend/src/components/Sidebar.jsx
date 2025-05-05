@@ -73,11 +73,11 @@ const Sidebar = () => {
       <aside 
         ref={sidebarRef}
         style={{ width: `${sidebarWidth}px`, minWidth: `${minWidth}px` }}
-        className="h-full border-r border-base-300 flex flex-col transition-colors duration-200"
+        className="h-full border-gray-300 flex flex-col bg-[#ffffff] duration-200"
       >
-        <div className="border-b border-base-300 w-full p-5">
+        <div className="border-grey-600 w-full p-5">
           <div className="flex items-center gap-2">
-            {!isCompactMode && <span className="font-medium text-4xl">Contacts</span>}
+            {!isCompactMode && <span className="font-medium text-black text-4xl">Contacts</span>}
           </div>
           
           {/* Name search input - hanya muncul jika tidak dalam mode compact */}
@@ -89,7 +89,7 @@ const Sidebar = () => {
                   placeholder="Search by name..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="input input-sm input-bordered w-full pl-8"
+                  className="input input-sm input-bordered w-full pl-8 bg-white border border-gray-500 rounded-md  text-black"
                 />
                 <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 size-4 text-zinc-500" />
               </div>
@@ -104,8 +104,8 @@ const Sidebar = () => {
               onClick={() => setSelectedUser(user)}
               className={`
                 w-full p-3 flex items-center gap-3
-                hover:bg-base-300 transition-colors
-                ${selectedUser?._id === user._id ? "bg-base-300 ring-1 ring-base-300" : ""}
+                hover:bg-[#4FC3F7] transition-colors
+                ${selectedUser?._id === user._id ? "hover:bg-[#4FC3F7]" : ""}
               `}
             >
               <div className={`relative ${isCompactMode ? 'mx-auto' : ''}`}>
@@ -125,8 +125,8 @@ const Sidebar = () => {
               {/* User info - hanya muncul jika tidak dalam mode compact */}
               {!isCompactMode && (
                 <div className="text-left min-w-0">
-                  <div className="font-medium truncate">{user.fullName}</div>
-                  <div className="text-sm text-zinc-400">
+                  <div className="font-medium truncate text-[#111111]">{user.fullName}</div>
+                  <div className="text-sm text-zinc-600">
                     {user.description || "No description"}
                   </div>
                 </div>
@@ -135,10 +135,10 @@ const Sidebar = () => {
           ))}
 
           {searchQuery !== "" && filteredUsers.length === 0 && (
-            <div className="text-center text-zinc-500 py-4">No users found</div>
+            <div className="text-center text-zinc-600 py-4">No users found</div>
           )}
           {searchQuery === "" && (
-            <div className="text-center text-zinc-500 py-4">
+            <div className="text-center text-zinc-600 py-4">
               {isCompactMode ? "" : "Type to search contacts"}
             </div>
           )}

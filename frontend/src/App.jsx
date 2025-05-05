@@ -46,7 +46,7 @@ const App = () => {
         <Route path="/signup" element={!authUser ? <SignUpPage /> : <Navigate to="/login" />} />
         <Route path="/login" element={!authUser ? <LoginPage /> : <Navigate to="/User" />} />
         <Route path="/verifEmail" element={!authUser ? <VerifEmail /> : <Navigate to="/User" />} />
-        <Route path="/otp" element={!authUser ? <OtpPage /> : <Navigate to="/User" />} />
+        <Route path="/otp" element={!authUser ? <OtpPage /> : <Navigate to="/password" />} />
         <Route path="/password" element={!authUser ? <Password /> : <Navigate to="/User" />} />
         
         {/* Protected routes with Layout/Sidebar */}

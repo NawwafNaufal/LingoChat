@@ -96,13 +96,13 @@ export default function Layout({ children }) {
                   ${isMobile ? "fixed left-0 z-40" : ""}
                   ${isMobile && !mobileMenuOpen ? "-translate-x-full" : "translate-x-0"}`}
       >
-        <nav className="h-full flex flex-col bg-[#111111] border-r border-gray-800 shadow-sm">
+        <nav className="h-full flex flex-col bg-[#F5F5F5] border-r border-gray-300 shadow-sm">
           <div className="p-4 pb-2 flex justify-between items-center">
-              <h1 className={`text-lg font-bold text-white overflow-hidden transition-all ${expanded ? "w-32" : "w-0"}`}>N-G</h1>
+              <h1 className={`text-lg font-bold text-[#4FC3F7]  overflow-hidden transition-all ${expanded ? "w-32" : "w-0"}`}>N-G</h1>
             {!isMobile && (
               <button 
                 onClick={toggleSidebar} 
-                className="p-1.5 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-300"
+                className="p-1.5 rounded-lg bg-[#4FC3F7]  hover:bg-[#4FC3F7]  text-gray-300"
               >
                 {expanded ? <ChevronFirst /> : <ChevronLast />}
               </button>
@@ -114,7 +114,7 @@ export default function Layout({ children }) {
               {/* Home */}
               <Link to="/User">
               <SidebarItem 
-                icon={<MessageSquare className="w-5 h-5" />} 
+                icon={<MessageSquare className="w-5 h-5 text-black"/>} 
                 text="Home" 
                 active={location.pathname === "/User"}
                 />
@@ -123,7 +123,7 @@ export default function Layout({ children }) {
               {/* Search */}
               <Link to="/">
                 <SidebarItem 
-                  icon={<Search className="w-5 h-5" />} 
+                  icon={<Search className="w-5 h-5 text-black" />} 
                   text="Search" 
                   active={location.pathname === "/" || location.pathname === "/search"}
                 />
@@ -132,7 +132,7 @@ export default function Layout({ children }) {
               {/* Settings - modified to open popup instead of navigation */}
               <div onClick={openSettingsPopup}>
                 <SidebarItem 
-                  icon={<Settings className="w-5 h-5" />} 
+                  icon={<Settings className="w-5 h-5 text-black" />} 
                   text="Settings" 
                   active={location.pathname === "/settings"}
                 />
@@ -142,7 +142,7 @@ export default function Layout({ children }) {
               {authUser && (
                 <div onClick={openProfilePopup}>
                   <SidebarItem 
-                    icon={<User className="w-5 h-5" />} 
+                    icon={<User className="w-5 h-5 text-black" />} 
                     text="Profile" 
                     active={location.pathname === "/profile"}
                   />
@@ -156,7 +156,7 @@ export default function Layout({ children }) {
               {authUser && (
                 <div onClick={logout} className="px-3 mb-2">
                   <SidebarItem 
-                    icon={<LogOut className="w-5 h-5" />} 
+                    icon={<LogOut className="w-5 h-5 text-black" />} 
                     text="Logout" 
                   />
                 </div>
@@ -164,12 +164,12 @@ export default function Layout({ children }) {
             
             {/* User profile section */}
             <div 
-              className="border-t border-gray-800 p-3 cursor-pointer hover:bg-gray-800 transition-colors"
+              className="border-t border-gray-300 p-3 cursor-pointer hover:bg-[#4FC3F7]  transition-colors"
               onClick={openProfilePopup}
             >
               <div className="flex items-center gap-3">
                 {/* Avatar */}
-                <div className="w-8 h-8 rounded-full bg-gray-700 flex-shrink-0 overflow-hidden">
+                <div className="w-8 h-8 rounded-full bg-black flex-shrink-0 overflow-hidden">
                   {authUser && authUser.profilePic ? (
                     <img 
                       src={authUser.profilePic} 
@@ -185,10 +185,10 @@ export default function Layout({ children }) {
                 
                 <div className={`overflow-hidden transition-all ${expanded ? "w-full" : "w-0"}`}>
                   <div className="leading-4">
-                    <h4 className="font-semibold text-white">
+                    <h4 className="font-semibold text-black">
                       {authUser ? authUser.fullName || "User" : "Guest"}
                     </h4>
-                    <span className="text-xs text-gray-400">
+                    <span className="text-xs text-black">
                       {authUser ? authUser.email || "user@example.com" : "guest@example.com"}
                     </span>
                   </div>
@@ -244,8 +244,8 @@ export function SidebarItem({ icon, text, active, alert }) {
         relative flex items-center py-2 px-3 my-1 font-medium rounded-md cursor-pointer transition-colors group
         ${
           active
-            ? "bg-gradient-to-tr from-gray-700 to-gray-800 text-white"
-            : "hover:bg-gray-800 text-gray-400"
+            ? "bg-[#4FC3F7]  text-white"
+            : "hover:bg-[#4FC3F7]  text-gray-400"
         }
       `}
     >

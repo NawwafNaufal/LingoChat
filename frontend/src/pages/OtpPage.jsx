@@ -179,15 +179,15 @@ const EmailVerificationPage = () => {
   };
   
   return (
-    <div className="h-screen flex justify-center items-center bg-black text-white">
+    <div className="h-screen flex justify-center items-center bg-white text-black">
       {/* Header */}
       <div className="absolute top-0 left-0 w-full p-4 flex justify-between items-center">
-      <span className="text-3xl font-bold">N-G</span>
+      <span className="text-4xl font-bold text-[#1AA3D8]">N-G</span>
       </div>
 
       {/* Notifikasi (Success, Error, atau Warning) */}
       {notification.show && (
-        <div className={`fixed top-4 right-4 ${getNotificationColor()} text-white px-4 py-2 rounded-md flex items-center gap-2 shadow-lg animate-fadeIn`}>
+        <div className={`fixed top-4 right-4 ${getNotificationColor()} text-black px-4 py-2 rounded-md flex items-center gap-2 shadow-lg animate-fadeIn`}>
           {getNotificationIcon()}
           <span>{notification.message}</span>
         </div>
@@ -197,9 +197,9 @@ const EmailVerificationPage = () => {
       <div className="w-full max-w-lg p-6 sm:p-8">
         <div className="mb-8 text-center">
           <h1 className="text-4xl font-bold">{t("Verify your email address")}</h1>
-          <p className="text-gray-400 text-sm mt-2">
+          <p className="text-black text-sm mt-2">
             {t("Please enter the 5-digit code we sent to")}<br />
-            <span className="text-white">{email}</span>
+            <span className="text-black">{email}</span>
           </p>
         </div>
         
@@ -214,7 +214,7 @@ const EmailVerificationPage = () => {
                 value={digit}
                 onChange={(e) => handleOtpChange(index, e.target.value)}
                 onKeyDown={(e) => handleKeyDown(index, e)}
-                className="input input-bordered w-12 h-12 text-center text-xl bg-transparent border-gray-700"
+                className="input input-bordered w-12 h-12 text-center  rounded-md shadow-md text-xl bg-transparent focus:outline-none focus:border-[#0088CC] border-gray-300"
                 autoComplete="one-time-code"
               />
             ))}
@@ -236,7 +236,7 @@ const EmailVerificationPage = () => {
           <div className="flex justify-center">
             <button 
               type="submit" 
-              className="btn w-full bg-[#111111] rounded-md hover:bg-[#222222] border-none mt-6 text-white" 
+              className="btn w-80 bg-[#1AA3D8] rounded-md hover:bg-[#0088CC] border-none mt-1 text-white disabled:text-white disabled:opacity-100 disabled:bg-[#1AA3D8]"
               disabled={isVerifying || otp.some(digit => digit === '')}
             >
               {isVerifying ? (
@@ -249,14 +249,13 @@ const EmailVerificationPage = () => {
               )}
             </button>
           </div>
-
-          <div className="text-center">
+        </form>
+          <div className="text-center text-gray-600 mt-1">
               {t("Need to change your email?")}
-            <Link to="/forgot-password" className="text-gray-400 hover:underline">
+            <Link to="/verifEmail" className="text-blue-400 hover:underline">
               {t("Return to sign-up")}
             </Link>
           </div>
-        </form>
       </div>
     </div>
   );

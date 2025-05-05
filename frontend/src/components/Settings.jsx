@@ -77,19 +77,19 @@ export default function SettingsPopup({ isOpen, onClose }) {
   return (
     <>
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-        <div className="bg-[#1c1c1c] w-80 max-w-md rounded-lg shadow-lg overflow-hidden border border-gray-800">
+        <div className="bg-[#fff] w-80 max-w-md rounded-lg shadow-lg overflow-hidden ">
 
           {/* Header */}
           <div className="flex justify-between items-center p-5 pb-6">
-            <h2 className="text-xl font-medium text-white">Settings</h2>
-            <button onClick={onClose} className="text-gray-400 hover:text-white">
+            <h2 className="text-xl font-medium text-black">Settings</h2>
+            <button onClick={onClose} className="text-black hover:text-black">
               <X className="h-5 w-5" />
             </button>
           </div>
 
           {/* User Profile */}
           <div className="px-5 pb-6 flex items-center">
-            <div className="h-16 w-16 rounded-full bg-gray-300 flex-shrink-0 mr-4">
+            <div className="h-16 w-16 rounded-full bg-white flex-shrink-0 mr-4">
               {userData.profilePic ? (
                 <img 
                   src={userData.profilePic} 
@@ -97,59 +97,59 @@ export default function SettingsPopup({ isOpen, onClose }) {
                   className="w-full h-full object-cover rounded-full"
                 />
               ) : (
-                <div className="w-full h-full flex items-center justify-center bg-gray-700 text-white text-2xl">
+                <div className="w-full h-full flex items-center justify-center bg-white text-white text-2xl">
                   {userData.name.charAt(0).toUpperCase()}
                 </div>
               )}
             </div>
             <div>
-              <div className="font-medium text-white text-lg">{userData.name}</div>
-              <div className="text-sm text-gray-400">{userData.email}</div>
-              <div className="text-sm text-gray-400">{userData.status}</div>
+              <div className="font-medium text-black text-lg">{userData.name}</div>
+              <div className="text-sm text-black">{userData.email}</div>
+              <div className="text-sm text-black">{userData.status}</div>
             </div>
           </div>
 
           {/* Divider */}
-          <div className="border-t border-gray-800 w-full mt-2"></div>
+          <div className="border-t border-bg-[#e9e9e9]  w-full mt-2"></div>
 
           {/* Menu Items */}
           <div className="py-2">
-            <button className="w-full text-left px-5 py-4 text-white hover:bg-gray-800 transition-colors flex items-center">
-              <User className="w-5 h-5 mr-3 text-gray-400" />
+            <button className="w-full text-left px-5 py-4 text-black hover:bg-[#e9e9e9] transition-colors flex items-center">
+              <User className="w-5 h-5 mr-3 text-black" />
               My Account
             </button>
 
             <button 
               onClick={openPasswordChange}
-              className="w-full text-left px-5 py-4 text-white hover:bg-gray-800 transition-colors flex items-center"
+              className="w-full text-left px-5 py-4 text-black hover:bg-[#e9e9e9] transition-colors flex items-center"
             >
-              <Lock className="w-5 h-5 mr-3 text-gray-400" />
+              <Lock className="w-5 h-5 mr-3 text-black" />
               Change Password
             </button>
 
             {/* Language Selector */}
             <div className="w-full">
-              <div className="px-5 py-4 text-white flex items-center">
-                <Languages className="w-5 h-5 mr-3 text-gray-400" />
+              <div className="px-5 py-4 text-black flex items-center">
+                <Languages className="w-5 h-5 mr-3 text-black" />
                 Language
               </div>
 
-              <div className="bg-[#1c1c1c] w-full border-t border-b border-gray-800">
+              <div className="bg-[#fff] w-full border-t border-b border-bg-[#e9e9e9] ">
                 <button 
                   onClick={() => handleLanguageSelect("English")}
-                  className={`w-full text-left pl-12 py-3 ${selectedLanguage === "English" ? "text-blue-400" : "text-gray-300"} hover:bg-gray-800 transition-colors`}
+                  className={`w-full text-left pl-12 py-3 ${selectedLanguage === "English" ? "text-black" : "text-gray-600"} hover:bg-[#e9e9e9] transition-colors`}
                 >
                   English
                 </button>
                 <button 
                   onClick={() => handleLanguageSelect("Indonesian")}
-                  className={`w-full text-left pl-12 py-3 ${selectedLanguage === "Indonesian" ? "text-blue-400" : "text-gray-300"} hover:bg-gray-800 transition-colors`}
+                  className={`w-full text-left pl-12 py-3 ${selectedLanguage === "Indonesian" ? "text-black" : "text-gray-600"} hover:bg-[#e9e9e9] transition-colors`}
                 >
                   Indonesian
                 </button>
                 <button 
                   onClick={() => handleLanguageSelect("Spanish")}
-                  className={`w-full text-left pl-12 py-3 ${selectedLanguage === "Spanish" ? "text-blue-400" : "text-gray-300"} hover:bg-gray-800 transition-colors`}
+                  className={`w-full text-left pl-12 py-3 ${selectedLanguage === "Spanish" ? "text-black" : "text-gray-600"} hover:bg-[#e9e9e9] transition-colors`}
                 >
                   Spanish
                 </button>
@@ -158,7 +158,7 @@ export default function SettingsPopup({ isOpen, onClose }) {
           </div>
 
           {/* Footer */}
-          <div className="p-6 text-gray-400 text-sm text-center">
+          <div className="p-6 text-black text-sm text-center">
             By Naufal
           </div>
         </div>

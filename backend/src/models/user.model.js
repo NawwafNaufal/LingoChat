@@ -18,7 +18,6 @@ const userSchema = new mongoose.Schema(
     password: {
       type: String,
       required: function() {
-        // Password hanya wajib jika provider adalah 'local' atau tidak ada
         return !this.provider || this.provider === 'local';
       },
       minlength: 6,

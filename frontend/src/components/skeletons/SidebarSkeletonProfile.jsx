@@ -1,26 +1,24 @@
-
 const SidebarSkeleton = () => {
-  // Create 8 skeleton items
   const skeletonContacts = Array(8).fill(null);
 
   return (
     <aside
-      className="h-full w-24 lg:w-96 border-r border-base-300 
-    flex flex-col transition-all duration-200"
+      className="h-full w-24 lg:w-96 bg-white border-r border-gray-200 
+      flex flex-col transition-all duration-200"
     >
       {/* Header */}
-      <div className="border-b border-base-300 w-full p-5">
+      <div className="border-b border-gray-200 w-full p-5">
         <div className="flex items-center gap-2">
-          <span className="font-medium hidden text-4xl lg:block">Contacts</span>
+          <span className="font-medium hidden text-4xl lg:block text-gray-900">Contacts</span>
         </div>
-        
+
         {/* Search Input Skeleton */}
         <div className="mt-4">
           <div className="relative">
-            <div className="skeleton w-full h-10 rounded-md"></div>
+            <div className="animate-pulse bg-gray-200 w-full h-10 rounded-md" />
           </div>
         </div>
-              </div>
+      </div>
 
       {/* Skeleton Contacts */}
       <div className="overflow-y-auto w-full py-3">
@@ -28,13 +26,13 @@ const SidebarSkeleton = () => {
           <div key={idx} className="w-full p-3 flex items-center gap-3">
             {/* Avatar skeleton */}
             <div className="relative mx-auto lg:mx-0">
-              <div className="skeleton size-12 rounded-full" />
+              <div className="animate-pulse bg-gray-200 size-12 rounded-full" />
             </div>
 
-            {/* User info skeleton - only visible on larger screens */}
+            {/* User info skeleton */}
             <div className="hidden lg:block text-left min-w-0 flex-1">
-              <div className="skeleton h-4 w-32 mb-2" />
-              <div className="skeleton h-3 w-16" />
+              <div className="animate-pulse bg-gray-200 h-4 w-32 mb-2 rounded" />
+              <div className="animate-pulse bg-gray-200 h-3 w-16 rounded" />
             </div>
           </div>
         ))}

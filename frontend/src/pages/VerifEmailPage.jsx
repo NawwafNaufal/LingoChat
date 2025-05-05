@@ -26,7 +26,7 @@ const LoginPage = () => {
         setShowNotification(true);
         alert(t("Email not found, please try again.")); 
       } else {
-        console.log(res.data); // opsional: cek respons
+        console.log(res.data); 
   
         setShowNotification(true);
   
@@ -51,10 +51,10 @@ const LoginPage = () => {
 
 
   return (
-    <div className="h-screen flex justify-center items-center bg-black text-white">
+    <div className="h-screen flex justify-center items-center bg-white text-black">
       {/* Header */}
       <div className="absolute top-0 left-0 w-full p-4 flex justify-between items-center">
-      <span className="text-3xl font-bold">N-G</span>
+      <span className="text-4xl font-bold text-[#1AA3D8]">N-G</span>
       </div>
 
       {/* Notifikasi Sukses */}
@@ -70,8 +70,8 @@ const LoginPage = () => {
         <div className="mb-8">
           <div className="flex flex-col items-center justify-center text-center gap-3">
             <div>
-              <h1 className="text-4xl font-bold text-white">{t("Forget Password?")}</h1>
-              <p className="text-gray-400 text-sm">{t("No worries, we'll send you reset instructions.")}</p>
+              <h1 className="text-4xl font-bold text-black">{t("Forget Password?")}</h1>
+              <p className="text-black text-sm">{t("No worries, we'll send you reset instructions.")}</p>
             </div>
           </div>
         </div>
@@ -79,15 +79,15 @@ const LoginPage = () => {
         <form onSubmit={handleSubmit} className="space-y-3">
           <div className="form-control mb-2">
             <label className="label">
-              <span className="label-text text-gray-300 font-medium">{t("email")}</span>
+              <span className="label-text text-black font-medium">{t("email")}</span>
             </label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Mail className="h-5 w-5 text-gray-500" />
+                <Mail className="h-5 w-5 text-black" />
               </div>
               <input
                 type="email"
-                className="input input-bordered w-full rounded-md pl-10 bg-transparent border-gray-700"
+                 className="input input-bordered w-full rounded-md pl-10  shadow-md border-gray-200 focus:outline-none focus:border-[#0088CC] bg-transparent"
                 placeholder="Your email address"
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
@@ -98,7 +98,7 @@ const LoginPage = () => {
 
           <button 
             type="submit" 
-            className="btn w-full bg-[#111111] rounded-md hover:bg-[#222222] border-none mt-6 text-white" 
+            className="btn w-full bg-[#1AA3D8] rounded-md hover:bg-[#0088CC] border-none mt-6 text-white disabled:text-white disabled:opacity-100 disabled:bg-[#1AA3D8]"
             disabled={isLoggingIn || !formData.email}
           >
             {isLoggingIn ? (
@@ -113,7 +113,7 @@ const LoginPage = () => {
         </form>
 
         <div className="text-center">
-          <p className="text-gray-400">
+          <p className="text-gray-600">
             {t("Remember password?")}{" "}
             <Link to="/login" className="text-blue-400 hover:underline">
               {t("Back to login")}

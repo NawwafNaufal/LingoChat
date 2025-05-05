@@ -66,14 +66,14 @@ const MessageEdit = ({
   };
 
   return (
-    <div className="p-2 w-full bg-zinc-900 border border-zinc-700 rounded-lg">
+    <div className="p-2 w-full bg-[#fff] border border-[#e9e9e9] ">
       <div className="flex justify-between mb-2">
-        <span className="text-xs text-zinc-400">Mengedit pesan asli</span>
+        <span className="text-sm text-zinc-700 ml-3">Edit pesan</span>
         <button 
           onClick={onCancel}
-          className="text-xs text-zinc-400 hover:text-white"
+          className="text-black hover:text-gray-600 flex items-center justify-center rounded-full mr-3 "
         >
-          Cancel
+          <X size={25} />
         </button>
       </div>
       
@@ -83,15 +83,15 @@ const MessageEdit = ({
             <img
               src={imagePreview}
               alt="Preview"
-              className="w-20 h-20 object-cover rounded-lg border border-zinc-700"
+              className="w-20 h-20 object-cover rounded-lg border border-zinc-400"
             />
             <button
               onClick={removeImage}
-              className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-zinc-800
+              className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-zinc-400
               flex items-center justify-center"
               type="button"
             >
-              <X className="size-3" />
+              <X className="size-12" />
             </button>
           </div>
         </div>
@@ -101,7 +101,7 @@ const MessageEdit = ({
         <div className="flex-1 flex gap-2">
           <input
             type="text"
-            className="w-full rounded-lg bg-[#111111] focus:ring-0 text-white px-2 py-2 outline-none text-sm sm:text-base border-none shadow-none"
+            className="w-full rounded-lg bg-[#fff] focus:ring-0 text-black px-2 py-2 outline-none text-sm sm:text-base border-none shadow-none"
             placeholder="Edit your message..."
             value={text}
             onChange={(e) => setText(e.target.value)}
@@ -116,16 +116,16 @@ const MessageEdit = ({
 
           <button
             type="button"
-            className={`hidden sm:flex items-center justify-center w-10 h-10 rounded-full border border-zinc-800 bg-[#111111]
+            className={`hidden sm:flex items-center justify-center w-10 h-10 rounded-full text-black hover:bg-gray-300
                     ${imagePreview ? "text-emerald-500" : "text-zinc-400"}`}
             onClick={() => fileInputRef.current?.click()}
           >
-            <Image size={20} />
+            <Image className= "text-black"size={20} />
           </button>
         </div>
         <button
           type="submit"
-          className="flex items-center justify-center w-10 h-10 rounded-full border border-zinc-800 bg-[#111111] text-zinc-200 hover:bg-zinc-900"
+          className="flex items-center justify-center w-10 h-10 rounded-full  bg-[#fff] text-black hover:bg-gray-300"
           disabled={!text.trim() && !imagePreview || isLoading}
         >
           <Send size={18} />

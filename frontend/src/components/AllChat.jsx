@@ -79,12 +79,12 @@ const Sidebar = () => {
       <aside 
         ref={sidebarRef}
         style={{ width: `${sidebarWidth}px`, minWidth: `${minWidth}px` }}
-        className="h-full border-r border-base-300 flex flex-col transition-colors duration-200"
+        className="h-full  border-base-300 flex flex-col bg-[#ffffff] transition-colors duration-200"
       >
         {/* Header */}
-        <div className="border-b border-base-300 w-full p-3">
+        <div className="border-b  border-gray-300 w-full p-3">
           <div className="flex items-center gap-2">
-            {!isCompactMode && <span className="font-medium text-4xl">Chats</span>}
+            {!isCompactMode && <span className="font-medium text-black text-4xl">Chats</span>}
           </div>
           
           {/* Search Input - hanya muncul jika tidak dalam mode compact */}
@@ -94,7 +94,7 @@ const Sidebar = () => {
                 <input
                   type="text"
                   placeholder="Search by name..."
-                  className="w-full bg-zinc-900 border border-zinc-800 rounded-md px-4 py-2 pl-10 text-sm"
+                  className="w-full bg-white border border-gray-500 rounded-md px-4 py-2 pl-10 text-sm  text-black"
                 />
                 <svg
                   className="absolute left-3 top-2.5 h-4 w-4 text-zinc-500"
@@ -120,11 +120,11 @@ const Sidebar = () => {
                   type="checkbox"
                   checked={showOnlineOnly}
                   onChange={(e) => setShowOnlineOnly(e.target.checked)}
-                  className="checkbox checkbox-sm"
+                  className="checkbox  border-gray-600"
                 />
-                <span className="text-sm">Show online only</span>
+                <span className="text-gray-600">Show online only</span>
               </label>
-              <span className="text-xs text-zinc-500">({onlineUsers.length - 1} online)</span>
+              <span className="text-xs text-black">({onlineUsers.length - 1} online)</span>
             </div>
           )}
         </div>
@@ -138,8 +138,8 @@ const Sidebar = () => {
                 onClick={() => setSelectedUser(user)}
                 className={`
                   w-full p-3 flex items-center gap-3
-                  hover:bg-base-300 transition-colors
-                  ${selectedUser?._id === user._id ? "bg-base-300 ring-1 ring-base-300" : ""}
+                  hover:bg-[#1AA3D8] transition-colors
+                  ${selectedUser?._id === user._id ? "bg-[#1AA3D8]" : ""}
                 `}
               >
                 {/* Profile Picture + Online Status */}
@@ -162,9 +162,9 @@ const Sidebar = () => {
                 {/* Info - hanya muncul jika tidak dalam mode compact */}
                 {!isCompactMode && (
                   <div className="text-left min-w-0 flex-1">
-                    <div className="font-medium truncate">{user.fullName}</div>
+                    <div className="font-medium truncate text-[#111111]">{user.fullName}</div>
                     <div className="flex justify-between items-center">
-                      <span className="text-sm text-zinc-400 truncate max-w-[220px]">
+                      <span className="text-sm text-zinc-600 truncate max-w-[220px]">
                         {user.lastMessage
                           ? typeof user.lastMessage === 'object' && user.lastMessage.text
                             ? user.lastMessage.text
@@ -178,12 +178,12 @@ const Sidebar = () => {
                       
                       {/* Timestamp */}
                       {user.lastMessageTime && (
-                        <span className="text-xs text-zinc-500 whitespace-nowrap ml-1">
+                        <span className="text-xs text-zinc-600 whitespace-nowrap ml-1">
                           {formatTime(user.lastMessageTime)}
                         </span>
                       )}
                       {user.createdAt && !user.lastMessageTime && (
-                        <span className="text-xs text-zinc-500 whitespace-nowrap ml-1">
+                        <span className="text-xs text-zinc-600 whitespace-nowrap ml-1">
                           {formatTime(user.createdAt)}
                         </span>
                       )}
@@ -202,7 +202,7 @@ const Sidebar = () => {
       
       {/* Resize handle */}
       <div
-        className="cursor-col-resize w-1 bg-zinc-800 hover:bg-zinc-600 active:bg-zinc-500"
+        className="cursor-col-resize w-1 bg-[#fff] hover:bg-gray-300 active:bg-gray-300"
         onMouseDown={startResizing}
       ></div>
     </div>

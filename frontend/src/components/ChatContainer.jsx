@@ -174,7 +174,7 @@ const ChatContainer = () => {
     <div className="flex-1 flex flex-col overflow-auto">
       <ChatHeader onLangChange={handleLanguageChange} />
 
-      <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-[#1c1c1c]" onClick={closeContextMenu}>
+      <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-[#F5F5F5]" onClick={closeContextMenu}>
         {messages.map((message, index) => (
           <div
             key={message._id}
@@ -210,7 +210,11 @@ const ChatContainer = () => {
               )}
             </div>
             <div 
-              className="chat-bubble flex flex-col"
+             className={`chat-bubble flex flex-col ${
+              message.senderId === authUser._id 
+                ? "bg-[#1AA3D8] text-white" 
+                : "bg-white border-1 border-gray-400 text-black"
+            }`}
               onContextMenu={(e) => handleContextMenu(e, message)}
             >
               {message.image && (
@@ -222,13 +226,15 @@ const ChatContainer = () => {
               )}
 
               {message.originalText && (
-                <p className="text-xs italic">
+                <p className="text-sm italic">
                   {message.correctedText}{' '}<small>({message.sourceLang})</small>
                 </p>
               )}
               {/* Teks asli */}
               {message.text && (
-                <p className="text-sm text-white mb-1">{message.text}{' '}<small>({message.targetLang})</small></p>
+                <p className={`text-base mb-1 ${message.senderId === authUser._id ? "text-white" : "text-black"}`}>
+                {message.text}{' '}<small >({message.targetLang})</small>
+              </p>
               )}
             </div>
           </div>
