@@ -34,16 +34,12 @@ const LoginPage = () => {
         }
       });
 
-      // Connect socket kalau ada
       connectSocket();
 
-      // Tampilkan notifikasi sukses
       toast.success("Logged in successfully with Google");
 
-      // Bersihkan URL
       window.history.replaceState({}, document.title, window.location.pathname);
 
-      // Redirect ke dashboard
       navigate('/user');
     }
   }, [navigate, setAuthUser, connectSocket, i18n]);
@@ -159,10 +155,9 @@ const LoginPage = () => {
              className="w-full flex items-center justify-center shadow-md gap-3 border border-gray-200 hover:border-[#0088CC] px-4 py-2 rounded-md bg-transparent text-black transition"
           >
             <img src="/google.png" alt="Google Logo" className="h-7 w-7" />
-            <span className="text-sm font-medium">Log In With Google</span>
+            <span className="text-sm font-medium">{t("Log In With Google")}</span>
           </button>
         </div>
-
         <div className="mb-6">
           <button
             type="button" 
@@ -170,7 +165,7 @@ const LoginPage = () => {
             className="w-full flex items-center justify-center shadow-md gap-3 border border-gray-200 hover:border-[#0088CC] px-4 py-2 rounded-md bg-transparent text-black transition"
           >
             <img src="/irengG.png" alt="GitHub Logo" className="h-6 w-6" />
-            <span className="text-sm font-medium">Log In With GitHub</span>
+            <span className="text-sm font-medium">{t("Log In With GitHub")}</span>
           </button>
         </div>
 
@@ -180,7 +175,6 @@ const LoginPage = () => {
           <span className="mx-3 text-gray-500 text-sm">OR</span>
           <div className="border-t border-gray-700 w-full"></div>
         </div>
-
         {/* Login Form */}
         <form onSubmit={handleSubmit} className="space-y-3 mt-2">
           {/* Email Input */}
@@ -194,12 +188,11 @@ const LoginPage = () => {
                 type="email"
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                placeholder="Your email address"
+                placeholder={t("Your email address")}
                 className="input input-bordered w-full rounded-md pl-10  shadow-md border-gray-200 focus:outline-none focus:border-[#0088CC] bg-transparent"
               />
             </div>
           </div>
-
           {/* Password Input */}
           <div className="form-control mb-4">
             <label className="label">
@@ -214,7 +207,7 @@ const LoginPage = () => {
                 type={showPassword ? "text" : "password"}
                 value={formData.password}
                 onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                placeholder="Your Password"
+                placeholder={t("Your Password")}
                 className="input input-bordered w-full rounded-md pl-10  shadow-md border-gray-200 focus:outline-none focus:border-[#0088CC] bg-transparent"
               />
               <button

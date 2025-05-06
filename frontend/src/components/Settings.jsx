@@ -1,38 +1,33 @@
 import { useState, useEffect } from 'react';
-import { X, User, Lock, Languages } from 'lucide-react';
+import { X, User, Lock, Languages, AlertTriangle } from 'lucide-react';
 import PasswordChangePopup from './ChangePassword';
 import { useAuthStore } from '../store/useAuthStore';
-import { useTranslation } from 'react-i18next'; // Import i18n
+import { useTranslation } from 'react-i18next';
+
 
 export default function SettingsPopup({ isOpen, onClose }) {
   const [selectedLanguage, setSelectedLanguage] = useState("English");
   const [isPasswordChangeOpen, setIsPasswordChangeOpen] = useState(false);
+  const [showProviderMessage, setShowProviderMessage] = useState(false);
   
-  // Ambil authUser dari store
   const { authUser } = useAuthStore();
-  // Get i18n functions
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
 
-  // Language mapping for consistency between i18n codes and display names
   const languageMapping = {
     "English": "en",
     "Indonesian": "id",
     "Spanish": "es",
-    // Reverse mapping
     "en": "English",
     "id": "Indonesian",
     "es": "Spanish"
   };
 
   useEffect(() => {
-    // Try to get language from localStorage first using the consistent key from login page
     const savedLang = localStorage.getItem('lang');
     
     if (savedLang) {
-      // Convert i18n language code to display name
       setSelectedLanguage(languageMapping[savedLang] || "English");
     } else {
-      // Fallback to the selectedLanguage in localStorage if exists
       const savedDisplayLanguage = localStorage.getItem('selectedLanguage');
       if (savedDisplayLanguage) {
         setSelectedLanguage(savedDisplayLanguage);
@@ -40,14 +35,18 @@ export default function SettingsPopup({ isOpen, onClose }) {
     }
   }, []);
 
+  useEffect(() => {
+      const savedLang = localStorage.getItem("lang");
+      if (savedLang) {
+        i18n.changeLanguage(savedLang);
+      }
+    }, [i18n]);
+
   const handleLanguageSelect = (language) => {
-    // Update the displayed language
     setSelectedLanguage(language);
     
-    // Save display language
     localStorage.setItem('selectedLanguage', language);
     
-    // Also update i18n language using the consistent key
     const langCode = languageMapping[language];
     if (langCode) {
       i18n.changeLanguage(langCode);
@@ -57,21 +56,36 @@ export default function SettingsPopup({ isOpen, onClose }) {
 
   if (!isOpen) return null;
 
-  const openPasswordChange = () => {
-    setIsPasswordChangeOpen(true);
+  const handlePasswordChangeClick = () => {
+    if (authUser && (authUser.provider === 'google' || authUser.provider === 'github')) {
+      setShowProviderMessage(true);
+      setTimeout(() => {
+        setShowProviderMessage(false);
+      }, 3000); 
+    } else {
+      setIsPasswordChangeOpen(true);
+    }
   };
 
-  // Jika authUser belum tersedia, bisa tampilkan loading atau null
   if (!authUser) {
     return null;
   }
 
-  // Extract user data yang dibutuhkan
   const userData = {
     name: authUser.fullName || authUser.name || "",
     email: authUser.email || "",
     status: authUser.description || authUser.status || "This is Away",
-    profilePic: authUser.profilePic || null
+    profilePic: authUser.profilePic || null,
+    provider: authUser.provider || "local"
+  };
+
+  const getProviderName = (provider) => {
+    switch(provider) {
+      case 'google': return 'Google';
+      case 'github': return 'GitHub';
+      case 'facebook': return 'Facebook';
+      default: return 'Email';
+    }
   };
 
   return (
@@ -81,7 +95,7 @@ export default function SettingsPopup({ isOpen, onClose }) {
 
           {/* Header */}
           <div className="flex justify-between items-center p-5 pb-6">
-            <h2 className="text-xl font-medium text-black">Settings</h2>
+            <h2 className="text-xl font-medium text-black">{t("Settings")}</h2>
             <button onClick={onClose} className="text-black hover:text-black">
               <X className="h-5 w-5" />
             </button>
@@ -97,7 +111,7 @@ export default function SettingsPopup({ isOpen, onClose }) {
                   className="w-full h-full object-cover rounded-full"
                 />
               ) : (
-                <div className="w-full h-full flex items-center justify-center bg-white text-white text-2xl">
+                <div className="w-full h-full flex items-center justify-center bg-gray-200 text-gray-600 text-2xl rounded-full">
                   {userData.name.charAt(0).toUpperCase()}
                 </div>
               )}
@@ -106,35 +120,61 @@ export default function SettingsPopup({ isOpen, onClose }) {
               <div className="font-medium text-black text-lg">{userData.name}</div>
               <div className="text-sm text-black">{userData.email}</div>
               <div className="text-sm text-black">{userData.status}</div>
+              {userData.provider !== 'local' && (
+                <div className="text-xs text-gray-500 mt-1">
+                  {t('Signed in with')} {getProviderName(userData.provider)}
+                </div>
+              )}
             </div>
           </div>
 
+          {/* Provider message */}
+          {showProviderMessage && (
+            <div className="mx-5 mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded-md flex items-start">
+              <AlertTriangle className="w-5 h-5 text-yellow-500 mr-2 flex-shrink-0 mt-0.5" />
+              <div className="text-sm text-yellow-700">
+                {t('Password change is not available for')} {getProviderName(userData.provider)} {t('accounts')}
+              </div>
+            </div>
+          )}
+
           {/* Divider */}
-          <div className="border-t border-bg-[#e9e9e9]  w-full mt-2"></div>
+          <div className="border-t border-gray-200 w-full mt-2"></div>
 
           {/* Menu Items */}
           <div className="py-2">
             <button className="w-full text-left px-5 py-4 text-black hover:bg-[#e9e9e9] transition-colors flex items-center">
               <User className="w-5 h-5 mr-3 text-black" />
-              My Account
+              {t('My Account')}
             </button>
 
             <button 
-              onClick={openPasswordChange}
-              className="w-full text-left px-5 py-4 text-black hover:bg-[#e9e9e9] transition-colors flex items-center"
+              onClick={handlePasswordChangeClick}
+              className={`w-full text-left px-5 py-4 flex items-center ${
+                userData.provider === 'google' || userData.provider === 'github' 
+                  ? 'text-gray-400 cursor-not-allowed' 
+                  : 'text-black hover:bg-[#e9e9e9] transition-colors'
+              }`}
             >
-              <Lock className="w-5 h-5 mr-3 text-black" />
-              Change Password
+              <Lock className={`w-5 h-5 mr-3 ${
+                userData.provider === 'google' || userData.provider === 'github' 
+                  ? 'text-gray-400' 
+                  : 'text-black'
+              }`} />
+              {t('Change Password')}
+              {(userData.provider === 'google' || userData.provider === 'github') && (
+                <span className="ml-auto text-xs text-gray-400">{t('Not available')}</span>
+              )}
             </button>
 
             {/* Language Selector */}
             <div className="w-full">
               <div className="px-5 py-4 text-black flex items-center">
                 <Languages className="w-5 h-5 mr-3 text-black" />
-                Language
+                {t('Language')}
               </div>
 
-              <div className="bg-[#fff] w-full border-t border-b border-bg-[#e9e9e9] ">
+              <div className="bg-[#fff] w-full border-t border-b border-gray-200">
                 <button 
                   onClick={() => handleLanguageSelect("English")}
                   className={`w-full text-left pl-12 py-3 ${selectedLanguage === "English" ? "text-black" : "text-gray-600"} hover:bg-[#e9e9e9] transition-colors`}
@@ -164,11 +204,13 @@ export default function SettingsPopup({ isOpen, onClose }) {
         </div>
       </div>
 
-      {/* Password Change Popup */}
-      <PasswordChangePopup 
-        isOpen={isPasswordChangeOpen} 
-        onClose={() => setIsPasswordChangeOpen(false)} 
-      />
+      {/* Password Change Popup - Only show for local accounts */}
+      {authUser && authUser.provider === 'local' ? (
+        <PasswordChangePopup 
+          isOpen={isPasswordChangeOpen} 
+          onClose={() => setIsPasswordChangeOpen(false)} 
+        />
+      ) : null}
     </>
   );
 }

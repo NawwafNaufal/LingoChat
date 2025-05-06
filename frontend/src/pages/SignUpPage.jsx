@@ -179,7 +179,7 @@ const SignUpPage = () => {
                 <input
                   type="email"
                   className="input input-bordered w-full rounded-md pl-10  shadow-md border-gray-200 focus:outline-none focus:border-[#0088CC] bg-transparent"
-                  placeholder="Email"
+                  placeholder={t("Email")}
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 />
@@ -197,7 +197,7 @@ const SignUpPage = () => {
                 <input
                   type={showPassword ? "text" : "password"}
                   className="input input-bordered w-full rounded-md pl-10  shadow-md border-gray-200 focus:outline-none focus:border-[#0088CC] bg-transparent"
-                  placeholder="Password"
+                  placeholder={t("Password")}
                   value={formData.password}
                   onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                 />
@@ -227,7 +227,7 @@ const SignUpPage = () => {
             <p className="text-gray-600">
               {t("Already have an account?")}{" "}
               <Link to="/login" className="link text-blue-400">
-                {t("Log in")}
+                {t("Log In")}
               </Link>
             </p>
           </div>

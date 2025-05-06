@@ -68,12 +68,11 @@ export default function Layout({ children }) {
     }
   };
 
-  // Handler for opening settings popup
   const openSettingsPopup = (e) => {
-    e.preventDefault(); // Prevent navigation
+    e.preventDefault();
     setIsSettingsOpen(true);
     if (isMobile && mobileMenuOpen) {
-      setMobileMenuOpen(false); // Close mobile sidebar when popup opens
+      setMobileMenuOpen(false); 
     }
   };
 
@@ -88,8 +87,7 @@ export default function Layout({ children }) {
           {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
         </button>
       )}
-      
-      {/* Sidebar */}
+
       <aside 
         className={`h-screen ${expanded ? "w-52" : "w-16"} 
                   transition-all duration-300 ease-in-out
@@ -102,7 +100,7 @@ export default function Layout({ children }) {
             {!isMobile && (
               <button 
                 onClick={toggleSidebar} 
-                className="p-1.5 rounded-lg bg-[#4FC3F7]  hover:bg-[#4FC3F7]  text-gray-300"
+                className="p-1.5 rounded-lg bg-[#4FC3F7]  hover:bg-[#4FC3F7]  text-black"
               >
                 {expanded ? <ChevronFirst /> : <ChevronLast />}
               </button>
@@ -112,20 +110,20 @@ export default function Layout({ children }) {
           <SidebarContext.Provider value={{ expanded }}>
             <ul className="flex-1 px-3">
               {/* Home */}
-              <Link to="/User">
+              <Link to="/">
               <SidebarItem 
                 icon={<MessageSquare className="w-5 h-5 text-black"/>} 
-                text="Home" 
-                active={location.pathname === "/User"}
+                text={<span className="text-black">Home</span>}
+                active={location.pathname === "/"}
                 />
               </Link>
               
               {/* Search */}
-              <Link to="/">
+              <Link to="/User">
                 <SidebarItem 
                   icon={<Search className="w-5 h-5 text-black" />} 
-                  text="Search" 
-                  active={location.pathname === "/" || location.pathname === "/search"}
+                  text={<span className="text-black">Search</span>}
+                  active={location.pathname === "/User" || location.pathname === "/search"}
                 />
               </Link>
               
@@ -133,7 +131,7 @@ export default function Layout({ children }) {
               <div onClick={openSettingsPopup}>
                 <SidebarItem 
                   icon={<Settings className="w-5 h-5 text-black" />} 
-                  text="Settings" 
+                  text={<span className="text-black">Settings</span>}
                   active={location.pathname === "/settings"}
                 />
               </div>
@@ -143,21 +141,21 @@ export default function Layout({ children }) {
                 <div onClick={openProfilePopup}>
                   <SidebarItem 
                     icon={<User className="w-5 h-5 text-black" />} 
-                    text="Profile" 
+                    text={<span className="text-black">Profile</span>}
+                    textColor="text-black"
                     active={location.pathname === "/profile"}
                   />
                 </div>
               )}
             </ul>
           
-          {/* User profile section at bottom */}
           <div className="mt-auto">
               {/* Logout - Moved here, right above the profile */}
               {authUser && (
                 <div onClick={logout} className="px-3 mb-2">
                   <SidebarItem 
                     icon={<LogOut className="w-5 h-5 text-black" />} 
-                    text="Logout" 
+                    text={<span className="text-black">Logout</span>} 
                   />
                 </div>
               )}
@@ -169,7 +167,7 @@ export default function Layout({ children }) {
             >
               <div className="flex items-center gap-3">
                 {/* Avatar */}
-                <div className="w-8 h-8 rounded-full bg-black flex-shrink-0 overflow-hidden">
+                <div className="w-8 h-8 rounded-full bg-white flex-shrink-0 overflow-hidden">
                   {authUser && authUser.profilePic ? (
                     <img 
                       src={authUser.profilePic} 
@@ -200,10 +198,9 @@ export default function Layout({ children }) {
         </nav>
       </aside>
       
-      {/* Overlay for mobile when sidebar is open */}
       {isMobile && mobileMenuOpen && (
         <div 
-          className="fixed inset-0 bg-black bg-opacity-50 z-30"
+          className="fixed inset-0 bg-[#F5F5F5] bg-opacity-50 z-30"
           onClick={toggleMobileMenu}
         />
       )}

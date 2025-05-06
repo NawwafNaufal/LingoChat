@@ -2,6 +2,8 @@ import { useRef, useState } from "react";
 import { useChatStore } from "../store/useChatStore";
 import { Image, Send, X } from "lucide-react";
 import toast from "react-hot-toast";
+import { useTranslation } from 'react-i18next';
+import { useEffect } from 'react';
 
 const MessageInput = ({ sourceLang, targetLang }) => {
   const [text, setText] = useState("");
@@ -9,6 +11,16 @@ const MessageInput = ({ sourceLang, targetLang }) => {
   const fileInputRef = useRef(null);
   const { sendMessage } = useChatStore();
   const [isLoading, setIsLoading] = useState(false);
+
+  const { t, i18n } = useTranslation();
+
+
+   useEffect(() => {
+          const savedLang = localStorage.getItem("lang");
+          if (savedLang) {
+            i18n.changeLanguage(savedLang);
+          }
+        }, [i18n]);
   
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -17,12 +29,15 @@ const MessageInput = ({ sourceLang, targetLang }) => {
       return;
     }
 
+
     const reader = new FileReader();
     reader.onloadend = () => {
       setImagePreview(reader.result);
     };
     reader.readAsDataURL(file);
   };
+
+  
 
   const removeImage = () => {
     setImagePreview(null);
@@ -87,7 +102,7 @@ const MessageInput = ({ sourceLang, targetLang }) => {
           <input
             type="text"
             className="w-full rounded-lg bg-[#fff] focus:ring-0 text-black px-2 py-2 outline-none text-sm sm:text-base border-none shadow-none"
-            placeholder="Type a message..."
+            placeholder={t("Type a message...")}
             value={text}
             onChange={(e) => setText(e.target.value)}
             disabled={isLoading}

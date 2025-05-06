@@ -13,6 +13,7 @@
 (ter)tungkus lumus
 rumahmu
 -an
+test
 -anda
 -el-
 -em-

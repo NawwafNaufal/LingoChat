@@ -53,7 +53,7 @@ const App = () => {
         <Route path="/" element={
           authUser ? (
             <Layout>
-              <HomePage />
+              <AllChats />
             </Layout>
           ) : (
             <Navigate to="/login" />
@@ -62,7 +62,7 @@ const App = () => {
         <Route path="/User" element={
           authUser ? (
             <Layout>
-              <AllChats />
+              <HomePage />
             </Layout>
           ) : (
             <Navigate to="/login" />

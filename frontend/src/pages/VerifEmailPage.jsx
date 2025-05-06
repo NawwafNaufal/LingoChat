@@ -88,7 +88,7 @@ const LoginPage = () => {
               <input
                 type="email"
                  className="input input-bordered w-full rounded-md pl-10  shadow-md border-gray-200 focus:outline-none focus:border-[#0088CC] bg-transparent"
-                placeholder="Your email address"
+                placeholder={t("Your email address")}
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 required

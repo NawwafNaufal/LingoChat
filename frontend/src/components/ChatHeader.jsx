@@ -9,7 +9,6 @@ const ChatHeader = ({ onLangChange }) => {
   const { onlineUsers } = useAuthStore();
   const [showUserProfile, setShowUserProfile] = useState(false);
   
-  // Load language preferences from localStorage or use defaults
   const [sourceLang, setSourceLang] = useState(() => {
     return localStorage.getItem("chatSourceLang") || "English";
   });
@@ -18,7 +17,6 @@ const ChatHeader = ({ onLangChange }) => {
     return localStorage.getItem("chatTargetLang") || "Indonesia";
   });
 
-  // Initialize language settings on component mount
   useEffect(() => {
     onLangChange?.(sourceLang, targetLang);
   }, [onLangChange, sourceLang, targetLang]);
@@ -46,12 +44,11 @@ const ChatHeader = ({ onLangChange }) => {
   if (!selectedUser) return null;
 
   return (
-    <div className="p-2.5 border border-[#e9e9e9]   bg-[#Ffffff]">
+    <div className="p-2.5 border border-[#e9e9e9] bg-[#Ffffff]">
       <div className="flex items-center justify-between">
-        {/* Kiri: Avatar + Nama */}
         <div
           className="flex items-center gap-3 cursor-pointer  "
-          onClick={toggleUserProfile} // Tautan untuk memicu popup
+          onClick={toggleUserProfile} 
           role="button"
           tabIndex="0"
         >
@@ -67,10 +64,8 @@ const ChatHeader = ({ onLangChange }) => {
             </p>
           </div>
         </div>
-
-        {/* Kanan: Dropdown Bahasa + Tombol Close */}
         <div className="flex items-center gap-8">
-          <div className="flex items-center gap-1 text-sm text-white">
+          <div className="flex items-center gap-1 text-sm text-black">
             <select
               value={sourceLang}
               onChange={handleSourceLangChange}
@@ -91,14 +86,11 @@ const ChatHeader = ({ onLangChange }) => {
               <option>Spanish</option>
             </select>
           </div>
-
           <button onClick={() => setSelectedUser(null)}>
             <X className="text-black"/>
           </button>
         </div>
       </div>
-
-      {/* Popup User Profile */}
       {showUserProfile && (
         <UserProfilePopup
           userId={selectedUser._id}

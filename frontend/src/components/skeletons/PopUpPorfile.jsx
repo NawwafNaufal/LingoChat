@@ -1,10 +1,19 @@
 import { useState, useEffect } from "react";
 import { X } from "lucide-react";
 import { useChatStore } from "../../store/useChatStore";
+import { useTranslation } from "react-i18next";
 
 const PopUpPorfile = ({ userId, onClose }) => {
   const { getUserProfile, userProfile, isLoadingProfile, clearUserProfile } = useChatStore();
   const [error, setError] = useState(null);
+
+  const { t, i18n } = useTranslation();
+  useEffect(() => {
+    const savedLang = localStorage.getItem("lang");
+    if (savedLang) {
+      i18n.changeLanguage(savedLang);
+    }
+  }, [i18n]);
 
   useEffect(() => {
     const loadUserProfile = async () => {

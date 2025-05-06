@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { useChatStore } from "../store/useChatStore";
 import { useAuthStore } from "../store/useAuthStore";
+import { useTranslation } from "react-i18next";
 import SidebarSkeleton from "./skeletons/SidebarSkeleton";
 // import { MessageSquare } from "lucide-react";
 
@@ -9,27 +10,33 @@ const Sidebar = () => {
   const { onlineUsers } = useAuthStore();
   const [showOnlineOnly, setShowOnlineOnly] = useState(false);
   
-  // State untuk menyimpan lebar sidebar
-  const [sidebarWidth, setSidebarWidth] = useState(384); // nilai default 384px = w-96
+  
+  const [sidebarWidth, setSidebarWidth] = useState(384); 
   const [isResizing, setIsResizing] = useState(false);
   const sidebarRef = useRef(null);
-  const minWidth = 70; // minimal width yang lebih kecil (seperti Telegram)
-  const maxWidth = 500; // maksimal width
+  const minWidth = 70; 
+  const maxWidth = 500; 
+
+  const { t, i18n } = useTranslation();
   
-  // Computed value untuk mengetahui apakah sidebar dalam mode compact
   const isCompactMode = sidebarWidth <= 100;
 
   useEffect(() => {
     getUsersAll();
   }, [getUsersAll]);
 
-  // Fungsi untuk memulai resize
   const startResizing = (e) => {
     e.preventDefault();
     setIsResizing(true);
   };
 
-  // Fungsi untuk melakukan resize saat mouse bergerak
+  useEffect(() => {
+    const savedLang = localStorage.getItem("lang");
+    if (savedLang) {
+      i18n.changeLanguage(savedLang);
+    }
+  }, [i18n]);
+
   const handleMouseMove = (e) => {
     if (!isResizing) return;
     
@@ -84,7 +91,7 @@ const Sidebar = () => {
         {/* Header */}
         <div className="border-b  border-gray-300 w-full p-3">
           <div className="flex items-center gap-2">
-            {!isCompactMode && <span className="font-medium text-black text-4xl">Chats</span>}
+            {!isCompactMode && <span className="font-medium text-black text-4xl">{t("Chats")}</span>}
           </div>
           
           {/* Search Input - hanya muncul jika tidak dalam mode compact */}
@@ -93,7 +100,7 @@ const Sidebar = () => {
               <div className="relative">
                 <input
                   type="text"
-                  placeholder="Search by name..."
+                  placeholder={t("Search by name...")}
                   className="w-full bg-white border border-gray-500 rounded-md px-4 py-2 pl-10 text-sm  text-black"
                 />
                 <svg
@@ -122,9 +129,9 @@ const Sidebar = () => {
                   onChange={(e) => setShowOnlineOnly(e.target.checked)}
                   className="checkbox  border-gray-600"
                 />
-                <span className="text-gray-600">Show online only</span>
+                <span className="text-gray-600">{t("Show online only")}</span>
               </label>
-              <span className="text-xs text-black">({onlineUsers.length - 1} online)</span>
+              <span className="text-xs text-black">({onlineUsers.length - 1} {t("online")})</span>
             </div>
           )}
         </div>
@@ -138,11 +145,10 @@ const Sidebar = () => {
                 onClick={() => setSelectedUser(user)}
                 className={`
                   w-full p-3 flex items-center gap-3
-                  hover:bg-[#1AA3D8] transition-colors
-                  ${selectedUser?._id === user._id ? "bg-[#1AA3D8]" : ""}
+                  hover:bg-[#4FC3F7] transition-colors
+                  ${selectedUser?._id === user._id ? "bg-[#4FC3F7]" : ""}
                 `}
               >
-                {/* Profile Picture + Online Status */}
                 <div className={`relative ${isCompactMode ? 'mx-auto' : ''}`}>
                   <div className="relative">
                     <img
@@ -172,8 +178,8 @@ const Sidebar = () => {
                             ? "📷 Image"
                             : typeof user.lastMessage === 'string'
                             ? user.lastMessage
-                            : "No messages yet"
-                          : "No messages yet"}
+                            : t("No messages yet")
+                          : t("No messages yet")}
                       </span>
                       
                       {/* Timestamp */}
@@ -194,7 +200,7 @@ const Sidebar = () => {
             ))
           ) : (
             <div className="text-center text-zinc-500 py-4">
-              {showOnlineOnly ? "No online users" : ""}
+              {showOnlineOnly ? t("No online users") : ""}
             </div>
           )}
         </div>
@@ -202,7 +208,7 @@ const Sidebar = () => {
       
       {/* Resize handle */}
       <div
-        className="cursor-col-resize w-1 bg-[#fff] hover:bg-gray-300 active:bg-gray-300"
+        className="cursor-col-resize w-0.5 bg-[#e9e9e9] hover:bg-gray-300 active:bg-gray-300"
         onMouseDown={startResizing}
       ></div>
     </div>

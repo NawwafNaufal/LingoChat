@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import { useChatStore } from "../store/useChatStore";
 import { useAuthStore } from "../store/useAuthStore";
 import SidebarSkeleton from "./skeletons/SidebarSkeletonProfile";
+import { useTranslation } from "react-i18next";
 import { Search } from "lucide-react";
 
 const Sidebar = () => {
@@ -9,45 +10,46 @@ const Sidebar = () => {
   const { onlineUsers } = useAuthStore();
   const [searchQuery, setSearchQuery] = useState("");
   
-  // State untuk menyimpan lebar sidebar
-  const [sidebarWidth, setSidebarWidth] = useState(384); // nilai default 384px = w-96
+  const [sidebarWidth, setSidebarWidth] = useState(384); 
   const [isResizing, setIsResizing] = useState(false);
   const sidebarRef = useRef(null);
-  const minWidth = 70; // minimal width yang lebih kecil (seperti Telegram)
-  const maxWidth = 500; // maksimal width
+  const minWidth = 70; 
+  const maxWidth = 500; 
+  const { t, i18n } = useTranslation();
   
-  // Computed value untuk mengetahui apakah sidebar dalam mode compact
   const isCompactMode = sidebarWidth <= 100;
 
   useEffect(() => {
     getUsers();
   }, [getUsers]);
 
-  // Fungsi untuk memulai resize
   const startResizing = (e) => {
     e.preventDefault();
     setIsResizing(true);
   };
 
-  // Fungsi untuk melakukan resize saat mouse bergerak
+  useEffect(() => {
+    const savedLang = localStorage.getItem("lang");
+    if (savedLang) {
+      i18n.changeLanguage(savedLang);
+    }
+  }, [i18n]);
+
   const handleMouseMove = (e) => {
     if (!isResizing) return;
     
     let newWidth = e.clientX;
     
-    // Pastikan width dalam batas yang diizinkan
     if (newWidth < minWidth) newWidth = minWidth;
     if (newWidth > maxWidth) newWidth = maxWidth;
     
     setSidebarWidth(newWidth);
   };
 
-  // Fungsi untuk menghentikan resize
   const stopResizing = () => {
     setIsResizing(false);
   };
 
-  // Tambahkan event listener untuk mouse move dan mouse up
   useEffect(() => {
     if (isResizing) {
       window.addEventListener('mousemove', handleMouseMove);
@@ -73,25 +75,24 @@ const Sidebar = () => {
       <aside 
         ref={sidebarRef}
         style={{ width: `${sidebarWidth}px`, minWidth: `${minWidth}px` }}
-        className="h-full border-gray-300 flex flex-col bg-[#ffffff] duration-200"
+        className="h-full border-gray-600 flex flex-col bg-[#ffffff] duration-200"
       >
         <div className="border-grey-600 w-full p-5">
           <div className="flex items-center gap-2">
-            {!isCompactMode && <span className="font-medium text-black text-4xl">Contacts</span>}
+            {!isCompactMode && <span className="font-medium text-black text-4xl">{t("Contacts")}</span>}
           </div>
           
-          {/* Name search input - hanya muncul jika tidak dalam mode compact */}
           {!isCompactMode && (
             <div className="mt-3 relative">
               <div className="relative">
                 <input
                   type="text"
-                  placeholder="Search by name..."
+                  placeholder= {t("Search by name...")}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="input input-sm input-bordered w-full pl-8 bg-white border border-gray-500 rounded-md  text-black"
-                />
-                <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 size-4 text-zinc-500" />
+                  className="w-full bg-white border border-gray-500 rounded-md px-4 py-2 pl-10 text-sm text-black focus:outline-none focus:border-gray-500 focus:ring-0"
+/>
+                <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 size-4 text-zinc-600" />
               </div>
             </div>
           )}
@@ -122,12 +123,11 @@ const Sidebar = () => {
                 )}
               </div>
 
-              {/* User info - hanya muncul jika tidak dalam mode compact */}
               {!isCompactMode && (
                 <div className="text-left min-w-0">
                   <div className="font-medium truncate text-[#111111]">{user.fullName}</div>
                   <div className="text-sm text-zinc-600">
-                    {user.description || "No description"}
+                    {user.description || t("No description")}
                   </div>
                 </div>
               )}
@@ -135,19 +135,17 @@ const Sidebar = () => {
           ))}
 
           {searchQuery !== "" && filteredUsers.length === 0 && (
-            <div className="text-center text-zinc-600 py-4">No users found</div>
+            <div className="text-center text-zinc-600 py-4">{t("No users found")}</div>
           )}
           {searchQuery === "" && (
             <div className="text-center text-zinc-600 py-4">
-              {isCompactMode ? "" : "Type to search contacts"}
+              {isCompactMode ? "" : t("Type to search contacts")}
             </div>
           )}
         </div>
       </aside>
-      
-      {/* Resize handle */}
       <div
-        className="cursor-col-resize w-1 bg-zinc-800 hover:bg-zinc-600 active:bg-zinc-500"
+        className="cursor-col-resize w-1 bg-[#e9e9e9] hover:bg-zinc-600 active:bg-zinc-500"
         onMouseDown={startResizing}
       ></div>
     </div>

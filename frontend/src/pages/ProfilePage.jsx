@@ -1,15 +1,26 @@
 import { useState, useEffect } from "react";
 import { Pencil, Camera, Mail, User, X, Sailboat } from "lucide-react";
 import { useAuthStore } from "../store/useAuthStore";
+import { useTranslation } from "react-i18next";
 
 const ProfilePopup = ({ isOpen, onClose }) => {
   const { authUser, isUpdatingProfile, updateProfile, updateUsername, updateDescription } = useAuthStore();
+
+  const {t, i18n } = useTranslation();
 
   const [selectedImg, setSelectedImg] = useState(null);
   const [editNameMode, setEditNameMode] = useState(false);
   const [fullNameInput, setFullNameInput] = useState("");
   const [editDescriptionMode, setEditDescriptionMode] = useState(false);
   const [descriptionInput, setDescriptionInput] = useState("");
+
+  
+  useEffect(() => {
+    const savedLang = localStorage.getItem("lang");
+    if (savedLang) {
+      i18n.changeLanguage(savedLang);
+    }
+  }, [i18n]);
 
   useEffect(() => {
     if (authUser) {
@@ -85,7 +96,7 @@ const ProfilePopup = ({ isOpen, onClose }) => {
         </button>
 
         <h1 className="text-center text-lg font-semibold mb-4">
-          Your profile information
+          {t("Your profile information")}
         </h1>
 
         {/* Avatar Upload */}
@@ -112,7 +123,7 @@ const ProfilePopup = ({ isOpen, onClose }) => {
             </label>
           </div>
           <p className="text-sm text-gray-600">
-            Click the camera icon to update your photo
+            {t("Click the camera icon to update your photo")}
           </p>
         </div>
 
@@ -120,7 +131,7 @@ const ProfilePopup = ({ isOpen, onClose }) => {
           {/* Full Name */}
           <div>
             <div className="flex items-center ml-3 mb-1">
-              <label className="text-sm text-gray-600">Username</label>
+              <label className="text-sm text-gray-600">{t("Username")}</label>
             </div>
             <div className="relative">
               {editNameMode ? (
@@ -157,11 +168,9 @@ const ProfilePopup = ({ isOpen, onClose }) => {
               )}
             </div>
           </div>
-
-          {/* Description */}
           <div>
             <div className="flex items-center ml-3 mb-1">
-              <label className="text-sm text-gray-600">About</label>
+              <label className="text-sm text-gray-600">{t("About")}</label>
             </div>
             <div className="relative">
               {editDescriptionMode ? (
@@ -212,7 +221,7 @@ const ProfilePopup = ({ isOpen, onClose }) => {
 
           {/* Account Info */}
           <div className="mt-6 bg-[#fff] rounded-xl p-4">
-            <h2 className="text-base font-semibold mb-3">Account Information</h2>
+            <h2 className="text-base font-semibold mb-3">{t("Account Information")}</h2>
             <div className="text-sm space-y-2">
               <div className="flex justify-between">
                 <span>Member Since</span>

@@ -25,7 +25,6 @@ const ChatContainer = () => {
   const [sourceLang, setSourceLang] = useState("English");
   const [targetLang, setTargetLang] = useState("Indonesia");
   
-  // Context menu state
   const [contextMenu, setContextMenu] = useState({
     visible: false,
     position: { x: 0, y: 0 },
@@ -33,10 +32,8 @@ const ChatContainer = () => {
     messageText: "",
   });
 
-  // Edit message state
   const [editingMessage, setEditingMessage] = useState(null);
   
-  // Delete confirmation modal state
   const [deleteModal, setDeleteModal] = useState({
     isOpen: false,
     messageId: null

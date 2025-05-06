@@ -8,7 +8,7 @@ import axios from "axios";
 axios.defaults.headers.common['Content-Type'] = 'application/json';
 
 const EmailVerificationPage = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation(); // Ambil juga i18n instance
   const [isVerifying, setIsVerifying] = useState(false);
   const [otp, setOtp] = useState(['', '', '', '', '']);
   const [email, setEmail] = useState("");
@@ -21,6 +21,14 @@ const EmailVerificationPage = () => {
     type: "success", // success, error, warning
     message: ""
   });
+  
+  // Pastikan bahasa di-load dengan benar dari localStorage saat komponen di-mount
+  useEffect(() => {
+    const savedLang = localStorage.getItem("lang");
+    if (savedLang) {
+      i18n.changeLanguage(savedLang);
+    }
+  }, [i18n]);
   
   // Ambil email saat komponen dipasang
   useEffect(() => {
@@ -182,7 +190,7 @@ const EmailVerificationPage = () => {
     <div className="h-screen flex justify-center items-center bg-white text-black">
       {/* Header */}
       <div className="absolute top-0 left-0 w-full p-4 flex justify-between items-center">
-      <span className="text-4xl font-bold text-[#1AA3D8]">N-G</span>
+        <span className="text-4xl font-bold text-[#1AA3D8]">N-G</span>
       </div>
 
       {/* Notifikasi (Success, Error, atau Warning) */}
@@ -214,7 +222,7 @@ const EmailVerificationPage = () => {
                 value={digit}
                 onChange={(e) => handleOtpChange(index, e.target.value)}
                 onKeyDown={(e) => handleKeyDown(index, e)}
-                className="input input-bordered w-12 h-12 text-center  rounded-md shadow-md text-xl bg-transparent focus:outline-none focus:border-[#0088CC] border-gray-300"
+                className="input input-bordered w-12 h-12 text-center rounded-md shadow-md text-xl bg-transparent focus:outline-none focus:border-[#0088CC] border-gray-300"
                 autoComplete="one-time-code"
               />
             ))}
@@ -232,7 +240,6 @@ const EmailVerificationPage = () => {
               </button>
             </p>
           </div>
-
           <div className="flex justify-center">
             <button 
               type="submit" 
@@ -250,12 +257,12 @@ const EmailVerificationPage = () => {
             </button>
           </div>
         </form>
-          <div className="text-center text-gray-600 mt-1">
-              {t("Need to change your email?")}
-            <Link to="/verifEmail" className="text-blue-400 hover:underline">
-              {t("Return to sign-up")}
-            </Link>
-          </div>
+        <div className="text-center text-gray-600 mt-1">
+          {t("Need to change your email?")}{" "}
+          <Link to="/verifEmail" className="text-blue-400 hover:underline">
+            {t("Return to sign-up")}
+          </Link>
+        </div>
       </div>
     </div>
   );
