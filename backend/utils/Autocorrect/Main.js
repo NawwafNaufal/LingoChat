@@ -12,18 +12,18 @@ const language = 'id'; // 'id' untuk Indonesia, 'en' untuk English, 'es' untuk S
 const dictionaries = {
   id: {
     kamus: '../Autocorrect/Dictionary/KBBI.txt',
-    dataset: '../Autocorrect/Dictionary/Dataset.json',
-    bigram: '../Autocorrect/Dictionary/Begram.json'
+    dataset: '../Autocorrect/Dictionary/CorpusIndo.json',
+    bigram: '../Autocorrect/Dictionary/BigramKataUmum.json'
   },
   en: {
     kamus: '../Autocorrect/Dictionary/OID.txt',
-    dataset: '../Autocorrect/Dictionary/UnigramProbsEngNew.json',
-    bigram: '../Autocorrect/Dictionary/BigramProbsEng.json'
+    dataset: '../Autocorrect/Dictionary/CorpusEngUnigram.json',
+    bigram: '../Autocorrect/Dictionary/BigramKataUmumEng.json'
   },
   es: {
     kamus: '../Autocorrect/Dictionary/Spanish.txt',
-    dataset: '../Autocorrect/Dictionary/UnigramProbsSpanNew.json',
-    bigram: '../Autocorrect/Dictionary/BigramProbsSpan.json'
+    dataset: '../Autocorrect/Dictionary/CorpusSpanUnigram.json',
+    bigram: '../Autocorrect/Dictionary/BigramKataUmumSpan.json'
   }
 };
 

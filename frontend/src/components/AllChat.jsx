@@ -3,13 +3,18 @@ import { useChatStore } from "../store/useChatStore";
 import { useAuthStore } from "../store/useAuthStore";
 import { useTranslation } from "react-i18next";
 import SidebarSkeleton from "./skeletons/SidebarSkeleton";
-// import { MessageSquare } from "lucide-react";
 
-const Sidebar = () => {
-  const { getUsersAll, users, selectedUser, setSelectedUser, isUsersLoading } = useChatStore();
-  const { onlineUsers } = useAuthStore();
+const AllChat = () => {
+  const { 
+    getUsersAll, 
+    users, 
+    selectedUser, 
+    setSelectedUser, 
+    getMessages
+  } = useChatStore();
+  const { onlineUsers, socket } = useAuthStore();
   const [showOnlineOnly, setShowOnlineOnly] = useState(false);
-  
+  const [loading, setLoading] = useState(true); // Tambahkan state loading lokal
   
   const [sidebarWidth, setSidebarWidth] = useState(384); 
   const [isResizing, setIsResizing] = useState(false);
@@ -22,8 +27,41 @@ const Sidebar = () => {
   const isCompactMode = sidebarWidth <= 100;
 
   useEffect(() => {
-    getUsersAll();
+    const fetchUsers = async () => {
+      setLoading(true); // Set loading hanya saat pertama kali loading
+      try {
+        await getUsersAll();
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchUsers();
+    
+    const intervalId = setInterval(() => {
+      // Panggil getUsersAll tanpa mengubah state loading
+      getUsersAll();
+    }, 15000);
+    
+    return () => clearInterval(intervalId);
   }, [getUsersAll]);
+
+  useEffect(() => {
+    if (!socket) return;
+
+    const handleNewMessage = (message) => {
+      if (!users.some(user => user._id === message.senderId)) {
+        // Panggil getUsersAll tanpa mengubah state loading untuk pesan baru
+        getUsersAll();
+      }
+    };
+
+    socket.on('newMessage', handleNewMessage);
+    
+    return () => {
+      socket.off('newMessage', handleNewMessage);
+    };
+  }, [socket, users, getUsersAll]);
 
   const startResizing = (e) => {
     e.preventDefault();
@@ -42,19 +80,16 @@ const Sidebar = () => {
     
     let newWidth = e.clientX;
     
-    // Pastikan width dalam batas yang diizinkan
     if (newWidth < minWidth) newWidth = minWidth;
     if (newWidth > maxWidth) newWidth = maxWidth;
     
     setSidebarWidth(newWidth);
   };
 
-  // Fungsi untuk menghentikan resize
   const stopResizing = () => {
     setIsResizing(false);
   };
 
-  // Tambahkan event listener untuk mouse move dan mouse up
   useEffect(() => {
     if (isResizing) {
       window.addEventListener('mousemove', handleMouseMove);
@@ -71,7 +106,6 @@ const Sidebar = () => {
     ? users.filter((user) => onlineUsers.includes(user._id))
     : users;
 
-  // Format waktu dari timestamp
   const formatTime = (timestamp) => {
     if (!timestamp) return "";
     
@@ -79,29 +113,36 @@ const Sidebar = () => {
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   };
 
-  if (isUsersLoading) return <SidebarSkeleton />;
+  // Fungsi untuk memilih pengguna dan mengambil pesan
+  const handleSelectUser = (user) => {
+    setSelectedUser(user);
+    // Ambil pesan dari pengguna yang dipilih
+    getMessages(user._id);
+  };
+
+  // Hanya tampilkan SidebarSkeleton saat pertama kali loading
+  if (loading) return <SidebarSkeleton />;
 
   return (
     <div className="flex h-full">
       <aside 
         ref={sidebarRef}
         style={{ width: `${sidebarWidth}px`, minWidth: `${minWidth}px` }}
-        className="h-full  border-base-300 flex flex-col bg-[#ffffff] transition-colors duration-200"
+        className="h-full border-base-300 flex flex-col bg-[#ffffff] transition-colors duration-200"
       >
         {/* Header */}
-        <div className="border-b  border-gray-300 w-full p-3">
+        <div className="border-b border-gray-300 w-full p-3">
           <div className="flex items-center gap-2">
             {!isCompactMode && <span className="font-medium text-black text-4xl">{t("Chats")}</span>}
           </div>
           
-          {/* Search Input - hanya muncul jika tidak dalam mode compact */}
           {!isCompactMode && (
             <div className="mt-4">
               <div className="relative">
                 <input
                   type="text"
                   placeholder={t("Search by name...")}
-                  className="w-full bg-white border border-gray-500 rounded-md px-4 py-2 pl-10 text-sm  text-black"
+                  className="w-full bg-white border border-gray-500 rounded-md px-4 py-2 pl-10 text-sm text-black"
                 />
                 <svg
                   className="absolute left-3 top-2.5 h-4 w-4 text-zinc-500"
@@ -119,7 +160,6 @@ const Sidebar = () => {
             </div>
           )}
           
-          {/* Toggle Show Online Only - hanya muncul jika tidak dalam mode compact */}
           {!isCompactMode && (
             <div className="mt-3 flex items-center gap-2">
               <label className="cursor-pointer flex items-center gap-2">
@@ -127,7 +167,7 @@ const Sidebar = () => {
                   type="checkbox"
                   checked={showOnlineOnly}
                   onChange={(e) => setShowOnlineOnly(e.target.checked)}
-                  className="checkbox  border-gray-600"
+                  className="checkbox border-gray-600"
                 />
                 <span className="text-gray-600">{t("Show online only")}</span>
               </label>
@@ -142,12 +182,10 @@ const Sidebar = () => {
             filteredUsers.map((user) => (
               <button
                 key={user._id}
-                onClick={() => setSelectedUser(user)}
-                className={`
-                  w-full p-3 flex items-center gap-3
-                  hover:bg-[#4FC3F7] transition-colors
-                  ${selectedUser?._id === user._id ? "bg-[#4FC3F7]" : ""}
-                `}
+                onClick={() => handleSelectUser(user)}
+                className={`w-full p-3 flex items-center gap-3 hover:bg-[#4FC3F7] transition-colors ${
+                  selectedUser?._id === user._id ? "bg-[#4FC3F7]" : ""
+                }`}
               >
                 <div className={`relative ${isCompactMode ? 'mx-auto' : ''}`}>
                   <div className="relative">
@@ -158,14 +196,12 @@ const Sidebar = () => {
                     />
                     {onlineUsers.includes(user._id) && (
                       <span
-                        className="absolute bottom-0 right-0 size-3 bg-green-500 
-                        rounded-full ring-2 ring-zinc-900"
+                        className="absolute bottom-0 right-0 size-3 bg-green-500 rounded-full ring-2 ring-zinc-900"
                       />
                     )}
                   </div>
                 </div>
 
-                {/* Info - hanya muncul jika tidak dalam mode compact */}
                 {!isCompactMode && (
                   <div className="text-left min-w-0 flex-1">
                     <div className="font-medium truncate text-[#111111]">{user.fullName}</div>
@@ -182,7 +218,6 @@ const Sidebar = () => {
                           : t("No messages yet")}
                       </span>
                       
-                      {/* Timestamp */}
                       {user.lastMessageTime && (
                         <span className="text-xs text-zinc-600 whitespace-nowrap ml-1">
                           {formatTime(user.lastMessageTime)}
@@ -215,4 +250,4 @@ const Sidebar = () => {
   );
 };
 
-export default Sidebar;
+export default AllChat;

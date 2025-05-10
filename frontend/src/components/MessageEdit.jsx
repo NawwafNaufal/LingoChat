@@ -56,7 +56,6 @@ const MessageEdit = ({
         targetLang
       });
       
-      // Cancel edit mode after successful update
       onCancel();
     } catch (error) {
       console.error("Failed to update message:", error);

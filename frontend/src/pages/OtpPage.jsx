@@ -30,7 +30,6 @@ const EmailVerificationPage = () => {
     }
   }, [i18n]);
   
-  // Ambil email saat komponen dipasang
   useEffect(() => {
     // Coba ambil dari localStorage terlebih dahulu
     const storedEmail = localStorage.getItem("verificationEmail");

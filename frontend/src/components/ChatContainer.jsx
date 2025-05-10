@@ -32,6 +32,13 @@ const ChatContainer = () => {
     messageText: "",
   });
 
+  useEffect(() => {
+    getMessages(selectedUser._id);
+    subscribeToMessages();
+
+    return () => unsubscribeFromMessages();
+  }, [selectedUser._id, getMessages, subscribeToMessages, unsubscribeFromMessages]);
+
   const [editingMessage, setEditingMessage] = useState(null);
   
   const [deleteModal, setDeleteModal] = useState({
@@ -191,12 +198,12 @@ const ChatContainer = () => {
               </div>
             </div>
             <div className="chat-header mb-1">
-              <time className="text-xs opacity-50 ml-1">
+              <time className="text-xs text-black ml-1">
                 {formatMessageTime(message.createdAt)}
               </time>
-              {message.senderId === authUser._id && (
+              {/* {message.senderId === authUser._id && (
                 <button 
-                  className="ml-2 text-xs text-zinc-500 hover:text-zinc-300"
+                  className="ml-2 text-xs text-black hover:text-zinc-300"
                   onClick={() => {
                     setEditingMessage(message);
                     closeContextMenu();
@@ -204,7 +211,7 @@ const ChatContainer = () => {
                 >
                   Edit
                 </button>
-              )}
+              )} */}
             </div>
             <div 
              className={`chat-bubble flex flex-col ${

@@ -125,7 +125,6 @@ export default function PasswordChangePopup({ isOpen, onClose }) {
               </button>
             </div>
           </div>
-
           {/* Submit Button */}
           <button
             type="submit"

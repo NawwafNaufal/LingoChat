@@ -149,7 +149,6 @@ const ResetPasswordPage = () => {
               />
             </div>
           </div>
-
           {/* Confirm Password */}
           <div className="form-control mb-2">
             <label className="label">
