@@ -137,7 +137,7 @@ const ProfilePopup = ({ isOpen, onClose }) => {
               {editNameMode ? (
                 <>
                   <div className="flex items-center w-full">
-                    <User className="absolute left-3 w-5 h-5 text-gray-400" />
+                    <User className="absolute left-3 w-5 h-5 text-black" />
                     <input
                       type="text"
                       className="w-full bg-[#fff] text-black rounded-lg py-3 pl-10 pr-10 outline-none"
@@ -176,17 +176,17 @@ const ProfilePopup = ({ isOpen, onClose }) => {
               {editDescriptionMode ? (
                 <>
                   <div className="flex items-center w-full">
-                    <Sailboat className="absolute left-3 w-5 h-5 text-gray-600" />
+                    <Sailboat className="absolute left-3 w-5 h-5 text-gray-black" />
                     <input
                       type="text"
-                      className="w-full bg-[#fff] text-white rounded-lg py-3 pl-10 pr-10 outline-none"
+                      className="w-full bg-[#fff] text-black rounded-lg py-3 pl-10 pr-10 outline-none"
                       value={descriptionInput}
                       onChange={(e) => setDescriptionInput(e.target.value)}
                       onKeyPress={(e) => e.key === "Enter" && handleSubmitDescription()}
                       autoFocus
                     />
                     <button
-                      className="absolute right-3 text-white hover:text-green-400"
+                      className="absolute right-3 text-black hover:text-green-400"
                       onClick={handleSubmitDescription}
                     >
                       ✓
@@ -199,7 +199,7 @@ const ProfilePopup = ({ isOpen, onClose }) => {
                   onClick={() => setEditDescriptionMode(true)}
                 >
                   <div className="flex items-center flex-1 py-2">
-                    <Sailboat className="ml-3 w-5 h-5 text-gray-600" />
+                    <Sailboat className="ml-3 w-5 h-5 text-black" />
                     <span className="ml-2 text-black">{authUser.description || "Not set"}</span>
                   </div>
                   <Pencil className="mr-3 w-5 h-5 text-black" />
@@ -214,7 +214,7 @@ const ProfilePopup = ({ isOpen, onClose }) => {
               <label className="text-sm text-gray-600">Email Address</label>
             </div>
             <div className="flex items-center bg-[#fff] rounded-lg">
-              <Mail className="ml-3 w-5 h-5 text-gray-400" />
+              <Mail className="ml-3 w-5 h-5 text-black" />
               <span className="ml-2 py-2 text-black">{authUser.email || "Not set"}</span>
             </div>
           </div>

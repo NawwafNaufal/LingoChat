@@ -40,7 +40,7 @@ app.use(passport.session())
 app.use(cookieParser());
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: "http://192.168.139.28:5173",
     credentials: true,
   })
 );
@@ -59,7 +59,7 @@ if (process.env.NODE_ENV === "production") {
   });
 }
 
-server.listen(PORT, () => {
+server.listen(PORT,"0.0.0.0", () => {
   console.log("server is running on PORT:" + PORT);
   connectDB();
 });

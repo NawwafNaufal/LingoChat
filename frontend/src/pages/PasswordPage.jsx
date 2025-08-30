@@ -73,7 +73,7 @@ const ResetPasswordPage = () => {
 
     try {
       // Sesuaikan endpoint sesuai dengan controller yang diberikan
-      const response = await axios.patch(`http://localhost:4000/passwordAuth/changePassword/${email}`, {
+      const response = await axios.patch(`http://192.168.139.28:4000/passwordAuth/changePassword/${email}`, {
         password: formData.password
       }, {
         headers: {

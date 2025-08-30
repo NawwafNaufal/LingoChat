@@ -7,7 +7,8 @@ import MessageSkeleton from "./skeletons/MessageSkeleton";
 import { useAuthStore } from "../store/useAuthStore";
 import { formatMessageTime } from "../lib/utils";
 import MessageContextMenu from "./skeletons/ContextMenu";
-import DeleteConfirmModal from "./skeletons/DeleteConfirmModal"; // Import komponen modal baru
+import DeleteConfirmModal from "./skeletons/DeleteConfirmModal";
+import MessageLoadingIndicator from "./MessageLoadingIndicator";
 
 const ChatContainer = () => {
   const {
@@ -19,6 +20,7 @@ const ChatContainer = () => {
     unsubscribeFromMessages,
     updateMessage,
     deleteMessage,
+    isSendingMessage 
   } = useChatStore();
   const { authUser } = useAuthStore();
   const messageEndRef = useRef(null);
@@ -50,7 +52,6 @@ const ChatContainer = () => {
     setSourceLang(source);
     setTargetLang(target);
     console.log("Source:", source, "Target:", target);
-    // Bisa lanjutkan logic lain, seperti translate otomatis, dsb.
   };
 
   useEffect(() => {
@@ -65,13 +66,11 @@ const ChatContainer = () => {
     if (messageEndRef.current && messages) {
       messageEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
-  }, [messages]);
+  }, [messages, isSendingMessage]);
 
-  // Handle right click on message bubble only
   const handleContextMenu = (e, message) => {
     e.preventDefault();
     
-    // Only show context menu for the user's own messages
     if (message.senderId !== authUser._id) return;
     
     setContextMenu({
@@ -82,7 +81,6 @@ const ChatContainer = () => {
     });
   };
 
-  // Close context menu
   const closeContextMenu = () => {
     if (contextMenu.visible) {
       setContextMenu({
@@ -94,9 +92,7 @@ const ChatContainer = () => {
     }
   };
 
-  // Handle edit message
   const handleEditMessage = () => {
-    // Find the message to edit
     const messageToEdit = messages.find(msg => msg._id === contextMenu.messageId);
     if (messageToEdit) {
       setEditingMessage(messageToEdit);
@@ -104,15 +100,12 @@ const ChatContainer = () => {
     closeContextMenu();
   };
 
-  // Handle cancel edit
   const handleCancelEdit = () => {
     setEditingMessage(null);
   };
 
-  // Handle update message
   const handleUpdateMessage = async (updatedData) => {
     try {
-      // Kirim hanya data yang diperlukan, backend akan menangani autocorrect dan translate
       await updateMessage(editingMessage._id, {
         originalText: updatedData.originalText,
         image: updatedData.image,
@@ -120,13 +113,12 @@ const ChatContainer = () => {
         targetLang: updatedData.targetLang || targetLang
       });
       
-      setEditingMessage(null); // Keluar dari mode edit setelah update
+      setEditingMessage(null); 
     } catch (error) {
       console.error("Error updating message:", error);
     }
   };
 
-  // Handle copy message
   const handleCopyMessage = () => {
     navigator.clipboard.writeText(contextMenu.messageText)
       .then(() => {
@@ -138,7 +130,6 @@ const ChatContainer = () => {
     closeContextMenu();
   };
   
-  // Show delete confirmation modal
   const handleDeleteMessage = () => {
     setDeleteModal({
       isOpen: true,
@@ -147,7 +138,6 @@ const ChatContainer = () => {
     closeContextMenu();
   };
   
-  // Close delete modal
   const closeDeleteModal = () => {
     setDeleteModal({
       isOpen: false,
@@ -155,7 +145,6 @@ const ChatContainer = () => {
     });
   };
   
-  // Confirm delete message
   const confirmDeleteMessage = () => {
     if (deleteModal.messageId) {
       deleteMessage(deleteModal.messageId);
@@ -201,17 +190,6 @@ const ChatContainer = () => {
               <time className="text-xs text-black ml-1">
                 {formatMessageTime(message.createdAt)}
               </time>
-              {/* {message.senderId === authUser._id && (
-                <button 
-                  className="ml-2 text-xs text-black hover:text-zinc-300"
-                  onClick={() => {
-                    setEditingMessage(message);
-                    closeContextMenu();
-                  }}
-                >
-                  Edit
-                </button>
-              )} */}
             </div>
             <div 
              className={`chat-bubble flex flex-col ${
@@ -243,6 +221,12 @@ const ChatContainer = () => {
             </div>
           </div>
         ))}
+        
+        {/* Tampilkan indikator loading jika sedang mengirim pesan */}
+        {isSendingMessage && <MessageLoadingIndicator />}
+        
+        {/* Referensi untuk auto-scroll */}
+        <div ref={messageEndRef}></div>
       </div>
 
       {/* Context Menu */}

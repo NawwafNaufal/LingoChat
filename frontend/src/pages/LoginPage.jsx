@@ -47,7 +47,6 @@ const LoginPage = () => {
   }, [navigate, setAuthUser, connectSocket, i18n]);
 
   useEffect(() => {
-    // Add click outside handler to close language menu
     const handleClickOutside = (event) => {
       if (showLanguageMenu && !event.target.closest('.language-selector')) {
         setShowLanguageMenu(false);
@@ -75,20 +74,18 @@ const LoginPage = () => {
       "es": "Spanish"
     };
     
-    // Also save the display name for the settings component
     localStorage.setItem("selectedLanguage", langMapping[lang]);
     setShowLanguageMenu(false);
   };
 
   const handleGoogleLogin = () => {
-    window.location.href = "http://localhost:4000/auth/google";
+    window.location.href = "http://192.168.139.28:4000/auth/google";
   };
 
   const handleGitHubLogin = () => {
-    window.location.href = "http://localhost:4000/auth/github";
+    window.location.href = "http://192.168.139.28:4000/auth/github";
   };
 
-  // Helper function to get language name
   const getLanguageName = (code) => {
     const languages = {
       "en": "English",
@@ -225,7 +222,7 @@ const LoginPage = () => {
           {/* Submit Button */}
           <button
             type="submit"
-            className="btn w-full bg-[#1AA3D8] rounded-md hover:bg-[#0088CC] border-none mt-6 text-white"
+            className="btn w-full bg-[#1AA3D8] rounded-md hover:bg-[#0088CC] disabled:bg-[#1AA3D8] border-none mt-6 text-white"
             disabled={isLoggingIn}
           >
             {isLoggingIn ? (

@@ -22,7 +22,7 @@ const DeleteConfirmModal = ({ isOpen, onClose, onConfirm }) => {
           </button>
           <button
             onClick={onClose}
-            className="flex-1 py-3 bg-zinc-800 hover:bg-zinc-700 text-white font-medium transition-colors rounded-md"
+            className="flex-1 py-3 bg-[#4FC3F7] hover:bg-[#1AA3D8] text-white font-medium transition-colors rounded-md"
           >
             Cancel
           </button>

@@ -15441,6 +15441,7 @@ bertelingkah
 berteluk
 bertelungkup
 bertelur
+naufal
 temanku
 bertelur burung
 bertelut
@@ -23759,6 +23760,8 @@ ditergen
 diterjen
 ditersudutkan
 ditetak belah, dipalu belah, tembikar juga akan jadinya
+ditimang
+jadinya
 ditimang
 ditimang alun asmara
 ditimpa
@@ -36389,7 +36392,6 @@ jangan tiada
 jangan-jangan
 jangankan
 jangar
-jangat
 jangat liat kurang panggang
 janger
 janggal
@@ -48235,7 +48237,6 @@ ksal
 ksatria
 ksau
 ksi
-kta
 ktm
 ktp
 ktsp

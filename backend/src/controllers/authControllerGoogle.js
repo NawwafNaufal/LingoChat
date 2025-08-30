@@ -22,11 +22,9 @@ export const passportGoogle = {
                     return res.status(500).json({ message: 'Login failed', error: loginErr });
                 }
                 
-                // Gunakan generateToken untuk membuat dan menyimpan token
-                const token = generateToken(user._id, res);  // Panggil fungsi generateToken
+                const token = generateToken(user._id, res);  
                 
-                // Setelah token dibuat dan disimpan dalam cookie, redirect ke frontend
-                return res.redirect(`http://localhost:5173/?token=${token}&email=${user.email}`);
+                return res.redirect(`http://192.168.139.28:5173/?token=${token}&email=${user.email}`);
             });
         })(req, res, next);
     }

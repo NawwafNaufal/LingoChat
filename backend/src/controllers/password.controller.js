@@ -72,14 +72,11 @@ export const forgetPassword = async (req, res) => {
 
 
 export const validateCodeOtp = async (req, res) => {
-    // Ambil email dan otp dari request body (sesuai dengan frontend)
     const { email, otp } = req.body;
     
     console.log("Menerima request validasi OTP:", { email, otp });
     
     try {
-        // Panggil fungsi untuk memeriksa OTP di database
-        // Asumsikan getOtp menerima otp sebagai parameter (sesuaikan jika perlu)
         const result = await getOtp(otp);
         
         if(!result) {
@@ -88,14 +85,12 @@ export const validateCodeOtp = async (req, res) => {
             });
         }
         
-        // Periksa apakah email cocok dengan OTP
         if(result.email !== email) {
             return res.status(400).json({
                 message: "Email tidak cocok dengan kode OTP"
             });
         }
         
-        // Jika berhasil
         res.status(200).json({
             data: result.email,
             message: "Kode OTP valid"

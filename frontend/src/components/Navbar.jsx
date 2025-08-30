@@ -12,25 +12,23 @@ import {
   Search
 } from "lucide-react";
 import { useContext, createContext, useState, useEffect } from "react";
-import ProfilePopup from "../pages/ProfilePage"; // Import ProfilePopup
-import SettingsPopup from "./Settings" // Import SettingsPopup
+import ProfilePopup from "../pages/ProfilePage";
+import SettingsPopup from "./Settings" 
 
 const SidebarContext = createContext();
 
 export default function Layout({ children }) {
-  // Changed initial state to false so sidebar is always closed on refresh/load
   const [expanded, setExpanded] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false); // New state for settings popup
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false); 
   const { logout, authUser } = useAuthStore();
   const location = useLocation();
 
   useEffect(() => {
     const checkIfMobile = () => {
       setIsMobile(window.innerWidth < 768);
-      // No need to set expanded here as it's already false by default
     };
     
     checkIfMobile();
@@ -40,9 +38,7 @@ export default function Layout({ children }) {
     return () => window.removeEventListener('resize', checkIfMobile);
   }, []);
 
-  // Optional: Add effect to ensure sidebar is closed after login
   useEffect(() => {
-    // This will ensure sidebar is closed when auth state changes (login/logout)
     setExpanded(false);
   }, [authUser]);
 

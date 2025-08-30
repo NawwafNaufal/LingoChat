@@ -27,7 +27,6 @@ const SignUpPage = () => {
   }, [i18n]);
 
   useEffect(() => {
-    // Add click outside handler to close language menu
     const handleClickOutside = (event) => {
       if (showLanguageMenu && !event.target.closest('.language-selector')) {
         setShowLanguageMenu(false);
@@ -50,12 +49,10 @@ const SignUpPage = () => {
       "es": "Spanish"
     };
     
-    // Also save the display name for the settings component
     localStorage.setItem("selectedLanguage", langMapping[lang]);
     setShowLanguageMenu(false);
   };
 
-  // Helper function to get language name
   const getLanguageName = (code) => {
     const languages = {
       "en": "English",
@@ -66,11 +63,11 @@ const SignUpPage = () => {
   };
 
   const validateForm = () => {
-    if (!formData.fullName.trim()) return toast.error(t("fullname_required"));
-    if (!formData.email.trim()) return toast.error(t("email_required"));
-    if (!/\S+@\S+\.\S+/.test(formData.email)) return toast.error(t("invalid_email"));
-    if (!formData.password) return toast.error(t("password_required"));
-    if (formData.password.length < 6) return toast.error(t("password_min_length"));
+    if (!formData.fullName.trim()) return toast.error(t("Username Required"));
+    if (!formData.email.trim()) return toast.error(t("Email Required"));
+    if (!/\S+@\S+\.\S+/.test(formData.email)) return toast.error(t("Invalid Email"));
+    if (!formData.password) return toast.error(t("Password Required"));
+    if (formData.password.length < 6) return toast.error(t("Password Min 6 length"));
 
     return true;
   };
@@ -82,12 +79,10 @@ const SignUpPage = () => {
 
     if (success === true) {
       try {
-        // Don't store auth user after signup
         await signup(formData, false);
         
         toast.success(t("Registration successful! Please login."));
         
-        // Navigate to login page
         navigate("/login");
       } catch (error) {
         console.error("Signup error:", error);

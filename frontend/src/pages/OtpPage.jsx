@@ -4,11 +4,10 @@ import { Loader2, CheckCircle, XCircle, AlertCircle } from "lucide-react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 
-// Konfigurasi axios global untuk CORS
 axios.defaults.headers.common['Content-Type'] = 'application/json';
 
 const EmailVerificationPage = () => {
-  const { t, i18n } = useTranslation(); // Ambil juga i18n instance
+  const { t, i18n } = useTranslation(); 
   const [isVerifying, setIsVerifying] = useState(false);
   const [otp, setOtp] = useState(['', '', '', '', '']);
   const [email, setEmail] = useState("");
@@ -18,11 +17,10 @@ const EmailVerificationPage = () => {
   
   const [notification, setNotification] = useState({
     show: false,
-    type: "success", // success, error, warning
+    type: "success", 
     message: ""
   });
   
-  // Pastikan bahasa di-load dengan benar dari localStorage saat komponen di-mount
   useEffect(() => {
     const savedLang = localStorage.getItem("lang");
     if (savedLang) {
@@ -31,13 +29,10 @@ const EmailVerificationPage = () => {
   }, [i18n]);
   
   useEffect(() => {
-    // Coba ambil dari localStorage terlebih dahulu
     const storedEmail = localStorage.getItem("verificationEmail");
     
-    // Coba ambil dari state
     const stateEmail = location.state?.email;
     
-    // Prioritaskan yang tersedia
     if (storedEmail) {
       setEmail(storedEmail);
       console.log("Email diambil dari localStorage:", storedEmail);
@@ -45,7 +40,6 @@ const EmailVerificationPage = () => {
       setEmail(stateEmail);
       console.log("Email diambil dari state:", stateEmail);
     } else {
-      // Jika tidak ada, arahkan kembali ke halaman forgot password
       showNotification("error", t("Email not found. Please try again from the beginning."));
       setTimeout(() => {
         navigate("/forgot-password");
@@ -60,7 +54,6 @@ const EmailVerificationPage = () => {
       message
     });
 
-    // Sembunyikan notifikasi setelah durasi tertentu
     if (duration) {
       setTimeout(() => {
         setNotification(prev => ({ ...prev, show: false }));
@@ -89,18 +82,15 @@ const EmailVerificationPage = () => {
     e.preventDefault();
     setIsVerifying(true);
 
-    // Gabung array otp jadi string
     const otpString = otp.join('');
     console.log("Mengirim verifikasi OTP:", { email, otp: otpString });
 
     try {
-      // Pastikan format request body sesuai dengan backend
-      const response = await axios.post('http://localhost:4000/passwordAuth/validateOtp', {
+      const response = await axios.post('http://192.168.0.103:4000/passwordAuth/validateOtp', {
         email: email,
         otp: otpString
       }, {
-        // Tambahkan konfigurasi tambahan untuk CORS jika perlu
-        withCredentials: false, // Set true jika perlu kirim cookie
+        withCredentials: false, 
         headers: {
           'Content-Type': 'application/json',
         }
@@ -108,10 +98,8 @@ const EmailVerificationPage = () => {
 
       console.log("Verifikasi berhasil:", response.data);
       
-      // Tampilkan notifikasi sukses
       showNotification("success", t("OTP verification successful!"));
       
-      // Kalau verifikasi sukses, redirect ke halaman reset password setelah delay
       setTimeout(() => {
         navigate("/password", { 
           state: { 
@@ -123,14 +111,11 @@ const EmailVerificationPage = () => {
     } catch (error) {
       console.error("Gagal verifikasi OTP:", error);
       
-      // Dapatkan pesan error dari response
       const errorMessage = error.response?.data?.message || 
                          t("Invalid OTP code. Please check and try again.");
       
-      // Tampilkan notifikasi error
       showNotification("error", errorMessage);
       
-      // Reset input OTP jika kode salah
       if (error.response?.status === 400 || error.response?.status === 401) {
         setOtp(['', '', '', '', '']);
         inputRefs[0].current.focus();
@@ -142,7 +127,7 @@ const EmailVerificationPage = () => {
   
   const handleResendCode = async () => {
     try {
-      const response = await axios.post('http://localhost:4000/passwordAuth/newOtp', {
+      const response = await axios.post('http://192.168.139.28:4000/passwordAuth/newOtp', {
         email
       }, {
         headers: {
@@ -171,7 +156,6 @@ const EmailVerificationPage = () => {
     }
   };
 
-  // Mendapatkan warna background yang sesuai dengan tipe notifikasi
   const getNotificationColor = () => {
     switch (notification.type) {
       case "success":
@@ -192,7 +176,6 @@ const EmailVerificationPage = () => {
         <span className="text-4xl font-bold text-[#1AA3D8]">N-G</span>
       </div>
 
-      {/* Notifikasi (Success, Error, atau Warning) */}
       {notification.show && (
         <div className={`fixed top-4 right-4 ${getNotificationColor()} text-black px-4 py-2 rounded-md flex items-center gap-2 shadow-lg animate-fadeIn`}>
           {getNotificationIcon()}

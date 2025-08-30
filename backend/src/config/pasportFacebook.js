@@ -8,7 +8,7 @@ dotenv.config();
 passport.use(new GitHubStrategy({
     clientID: process.env.CLIENT_ID_GITHUB,
     clientSecret: process.env.CLIENT_SECRET_GITHUB,
-    callbackURL: "http://localhost:4000/auth/github/callback",
+    callbackURL: "http://192.168.139.28:4000/auth/github/callback",
     scope: ['user:email'],
 
 },

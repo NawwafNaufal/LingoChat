@@ -18,7 +18,7 @@ const LoginPage = () => {
     setShowNotification(false);
 
     try {
-      const res = await axios.post("http://localhost:4000/passwordAuth/emailVerif", {
+      const res = await axios.post("http://192.168.139.28:4000/passwordAuth/emailVerif", {
         email: formData.email
       });
       

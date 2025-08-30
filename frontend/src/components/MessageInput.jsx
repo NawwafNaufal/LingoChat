@@ -9,26 +9,24 @@ const MessageInput = ({ sourceLang, targetLang }) => {
   const [text, setText] = useState("");
   const [imagePreview, setImagePreview] = useState(null);
   const fileInputRef = useRef(null);
-  const { sendMessage } = useChatStore();
-  const [isLoading, setIsLoading] = useState(false);
-
+  const { sendMessage, isSendingMessage } = useChatStore();
   const { t, i18n } = useTranslation();
 
-
-   useEffect(() => {
-          const savedLang = localStorage.getItem("lang");
-          if (savedLang) {
-            i18n.changeLanguage(savedLang);
-          }
-        }, [i18n]);
+  useEffect(() => {
+    const savedLang = localStorage.getItem("lang");
+    if (savedLang) {
+      i18n.changeLanguage(savedLang);
+    }
+  }, [i18n]);
   
   const handleImageChange = (e) => {
     const file = e.target.files[0];
+    if (!file) return;
+    
     if (!file.type.startsWith("image/")) {
       toast.error("Please select an image file");
       return;
     }
-
 
     const reader = new FileReader();
     reader.onloadend = () => {
@@ -36,8 +34,6 @@ const MessageInput = ({ sourceLang, targetLang }) => {
     };
     reader.readAsDataURL(file);
   };
-
-  
 
   const removeImage = () => {
     setImagePreview(null);
@@ -47,18 +43,14 @@ const MessageInput = ({ sourceLang, targetLang }) => {
   const handleSendMessage = async (e) => {
     e.preventDefault();
     
-    // If no content or already loading, don't proceed
-    if ((!text.trim() && !imagePreview) || isLoading) return;
+    if ((!text.trim() && !imagePreview) || isSendingMessage) return;
 
-    // Immediately clear input fields and set loading
     const messageText = text.trim();
     const messageImage = imagePreview;
     
     setText("");
     setImagePreview(null);
     if (fileInputRef.current) fileInputRef.current.value = "";
-    
-    setIsLoading(true);
     
     try {
       await sendMessage({
@@ -70,15 +62,13 @@ const MessageInput = ({ sourceLang, targetLang }) => {
     } catch (error) {
       console.error("Failed to send message:", error);
       toast.error("Failed to send message. Please try again.");
-    } finally {
-      setIsLoading(false);
     }
   };
 
   return (
-    <div className="p-2 w-full bg-[#fff] border border-[#e9e9e9]  ">
+    <div className="p-2 w-full bg-[#fff] border border-[#e9e9e9]">
       {imagePreview && (
-        <div className="mb-3 flex items-center gap-2 ">
+        <div className="mb-3 flex items-center gap-2">
           <div className="relative">
             <img
               src={imagePreview}
@@ -105,7 +95,7 @@ const MessageInput = ({ sourceLang, targetLang }) => {
             placeholder={t("Type a message...")}
             value={text}
             onChange={(e) => setText(e.target.value)}
-            disabled={isLoading}
+            disabled={isSendingMessage}
           />
           <input
             type="file"
@@ -113,23 +103,23 @@ const MessageInput = ({ sourceLang, targetLang }) => {
             className="hidden"
             ref={fileInputRef}
             onChange={handleImageChange}
-            disabled={isLoading}
+            disabled={isSendingMessage}
           />
 
           <button
             type="button"
-            className={`hidden sm:flex items-center justify-center w-10 h-10 rounded-full  text-black  bg-[#bg-[#fff] hover:bg-gray-300]
+            className={`hidden sm:flex items-center justify-center w-10 h-10 rounded-full text-black bg-[#fff] hover:bg-gray-300
                      ${imagePreview ? "text-emerald-500" : "text-zinc-400"}`}
             onClick={() => fileInputRef.current?.click()}
-            disabled={isLoading}
+            disabled={isSendingMessage}
           >
-            <Image className= "text-black" size={20} />
+            <Image className="text-black" size={20} />
           </button>
         </div>
         <button
           type="submit"
-          className={`flex items-center justify-center w-10 h-10 rounded-full bg-[#fff] text-black hover:bg-gray-300 ${isLoading ? 'opacity-50' : ''}`}
-          disabled={(!text.trim() && !imagePreview) || isLoading}
+          className={`flex items-center justify-center w-10 h-10 rounded-full bg-[#fff] text-black hover:bg-gray-300 ${isSendingMessage ? 'opacity-50' : ''}`}
+          disabled={(!text.trim() && !imagePreview) || isSendingMessage}
         >
           <Send size={18} />
         </button>

@@ -14,7 +14,8 @@ const AllChat = () => {
   } = useChatStore();
   const { onlineUsers, socket } = useAuthStore();
   const [showOnlineOnly, setShowOnlineOnly] = useState(false);
-  const [loading, setLoading] = useState(true); // Tambahkan state loading lokal
+  const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
   
   const [sidebarWidth, setSidebarWidth] = useState(384); 
   const [isResizing, setIsResizing] = useState(false);
@@ -28,7 +29,7 @@ const AllChat = () => {
 
   useEffect(() => {
     const fetchUsers = async () => {
-      setLoading(true); // Set loading hanya saat pertama kali loading
+      setLoading(true);
       try {
         await getUsersAll();
       } finally {
@@ -39,7 +40,6 @@ const AllChat = () => {
     fetchUsers();
     
     const intervalId = setInterval(() => {
-      // Panggil getUsersAll tanpa mengubah state loading
       getUsersAll();
     }, 15000);
     
@@ -51,7 +51,6 @@ const AllChat = () => {
 
     const handleNewMessage = (message) => {
       if (!users.some(user => user._id === message.senderId)) {
-        // Panggil getUsersAll tanpa mengubah state loading untuk pesan baru
         getUsersAll();
       }
     };
@@ -102,9 +101,20 @@ const AllChat = () => {
     };
   }, [isResizing]);
 
-  const filteredUsers = showOnlineOnly
-    ? users.filter((user) => onlineUsers.includes(user._id))
-    : users;
+  const filteredUsers = users
+    .filter((user) => {
+      if (showOnlineOnly && !onlineUsers.includes(user._id)) {
+        return false;
+      }
+      
+      if (searchQuery.trim()) {
+        const query = searchQuery.toLowerCase();
+        return user.fullName.toLowerCase().includes(query) ||
+               (user.username && user.username.toLowerCase().includes(query));
+      }
+      
+      return true;
+    });
 
   const formatTime = (timestamp) => {
     if (!timestamp) return "";
@@ -113,14 +123,19 @@ const AllChat = () => {
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   };
 
-  // Fungsi untuk memilih pengguna dan mengambil pesan
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
+
+  const clearSearch = () => {
+    setSearchQuery("");
+  };
+
   const handleSelectUser = (user) => {
     setSelectedUser(user);
-    // Ambil pesan dari pengguna yang dipilih
     getMessages(user._id);
   };
 
-  // Hanya tampilkan SidebarSkeleton saat pertama kali loading
   if (loading) return <SidebarSkeleton />;
 
   return (
@@ -142,7 +157,9 @@ const AllChat = () => {
                 <input
                   type="text"
                   placeholder={t("Search by name...")}
-                  className="w-full bg-white border border-gray-500 rounded-md px-4 py-2 pl-10 text-sm text-black"
+                  value={searchQuery}
+                  onChange={handleSearchChange}
+                  className="w-full bg-white border border-gray-500 rounded-md px-4 py-2 pl-10 pr-10 text-sm text-black "
                 />
                 <svg
                   className="absolute left-3 top-2.5 h-4 w-4 text-zinc-500"
@@ -156,6 +173,26 @@ const AllChat = () => {
                     clipRule="evenodd"
                   />
                 </svg>
+                
+                {/* Clear search button */}
+                {searchQuery && (
+                  <button
+                    onClick={clearSearch}
+                    className="absolute right-3 top-2.5 h-4 w-4 text-zinc-500 hover:text-zinc-700 transition-colors"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </button>
+                )}
               </div>
             </div>
           )}
@@ -172,6 +209,16 @@ const AllChat = () => {
                 <span className="text-gray-600">{t("Show online only")}</span>
               </label>
               <span className="text-xs text-black">({onlineUsers.length - 1} {t("online")})</span>
+            </div>
+          )}
+          
+          {/* Search results info */}
+          {!isCompactMode && searchQuery && (
+            <div className="mt-2 text-xs text-zinc-600">
+              {filteredUsers.length === 0 
+                ? t("No users found") 
+                : `${filteredUsers.length} ${filteredUsers.length === 1 ? t("user found") : t("users found")}`
+              }
             </div>
           )}
         </div>
@@ -204,7 +251,9 @@ const AllChat = () => {
 
                 {!isCompactMode && (
                   <div className="text-left min-w-0 flex-1">
-                    <div className="font-medium truncate text-[#111111]">{user.fullName}</div>
+                    <div className="font-medium truncate text-[#111111]">
+                      {user.fullName}
+                    </div>
                     <div className="flex justify-between items-center">
                       <span className="text-sm text-zinc-600 truncate max-w-[220px]">
                         {user.lastMessage
@@ -235,7 +284,12 @@ const AllChat = () => {
             ))
           ) : (
             <div className="text-center text-zinc-500 py-4">
-              {showOnlineOnly ? t("No online users") : ""}
+              {searchQuery 
+                ? t("No users found matching your search") 
+                : showOnlineOnly 
+                ? t("No online users") 
+                : t("No users available")
+              }
             </div>
           )}
         </div>

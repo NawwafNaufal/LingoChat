@@ -6,6 +6,7 @@ const path = require('path');
  * @param {object} dictionaries 
  * @returns {object} 
  */
+
 function loadDictionaries(language, dictionaries) {
   const languageConfig = dictionaries[language];
   const kamusPath = path.join(__dirname, languageConfig.kamus);

@@ -21,7 +21,7 @@ const dictionaries = {
     bigram: '../Autocorrect/Dictionary/BigramKataUmumEng.json'
   },
   es: {
-    kamus: '../Autocorrect/Dictionary/Spanish.txt',
+    kamus: '../Autocorrect/Dictionary/SPANISHTEXT.txt',
     dataset: '../Autocorrect/Dictionary/CorpusSpanUnigram.json',
     bigram: '../Autocorrect/Dictionary/BigramKataUmumSpan.json'
   }

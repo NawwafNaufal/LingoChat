@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { X, User, Lock, Languages, AlertTriangle } from 'lucide-react';
+import { X, Lock, Languages, AlertTriangle } from 'lucide-react';
 import PasswordChangePopup from './ChangePassword';
 import { useAuthStore } from '../store/useAuthStore';
 import { useTranslation } from 'react-i18next';
@@ -143,10 +143,6 @@ export default function SettingsPopup({ isOpen, onClose }) {
 
           {/* Menu Items */}
           <div className="py-2">
-            <button className="w-full text-left px-5 py-4 text-black hover:bg-[#e9e9e9] transition-colors flex items-center">
-              <User className="w-5 h-5 mr-3 text-black" />
-              {t('My Account')}
-            </button>
 
             <button 
               onClick={handlePasswordChangeClick}

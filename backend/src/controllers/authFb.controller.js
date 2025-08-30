@@ -1,5 +1,5 @@
 import passport from "passport";
-import "../config/pasportFacebook.js"; // Ini file strategy GitHub kamu
+import "../config/pasportFacebook.js";
 import { generateToken } from "../lib/utils.js";
 
 export const passportGithub = {
@@ -21,7 +21,7 @@ export const passportGithub = {
 
                 const token = generateToken(user._id, res);
 
-                return res.redirect(`http://localhost:5173/?token=${token}&email=${user.email}`);
+                return res.redirect(`http://192.168.139.28:5173/?token=${token}&email=${user.email}`);
             });
         })(req, res, next);
     }
